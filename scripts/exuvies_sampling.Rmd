@@ -1,0 +1,552 @@
+---
+title: "Etude exuvies RN Vosges - Préparation plan d'échantillonnage étude-pilote"
+author: "Thibaut Couturier"
+output:
+  word_document: default
+  toc: yes
+  html_document: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(ggsn)
+library(lubridate)
+
+```
+
+
+Analyse en date du 
+`r Sys.Date()`
+
+# Préparation plan d'échantillonnage
+
+```{r results = FALSE, message=FALSE, warning=FALSE}
+contour_RN <- sf::st_read(dsn = "../data", layer = "RNN_selectTC")
+
+# TGF
+habitat_TGF <- sf::st_read(dsn = "../data", layer = "RNNTGF_CEFE_exporthabitatfavorable")
+
+A<-dim(habitat_TGF)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TGF %>%
+  cbind(ID_uniq) -> habitat_TGF
+
+habitat_TGF %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         CD_CORINE = as.factor(CD_CORINE)) -> habitat_TGF
+
+# TDC
+habitat_TDC <- sf::st_read(dsn = "../data", layer = "RNRTdC_CEFE_exporthabitatfavorable")
+
+A<-dim(habitat_TDC)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TDC %>%
+  cbind(ID_uniq) -> habitat_TDC
+
+habitat_TDC %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         CD_CORINE = as.factor(CD_CORINE)) -> habitat_TDC
+
+
+habitat_TDC %>%
+  filter(CD_CORINE=='51.1')
+
+# TDM
+habitat_TDM <- sf::st_read(dsn = "../data", layer = "RNRTdM_CEFE_exporthabitatfavorable")
+
+A<-dim(habitat_TDM)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TDM %>%
+  cbind(ID_uniq) -> habitat_TDM
+
+
+habitat_TDM %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         corine_1 = as.factor(corine_1),
+         corine_new = case_when(corine_1 %in% c("22.1", "22.4311", "22.4314", "51.13", "53.14", "53.147") ~ "eau_libre",
+                                corine_1 %in% c("53.2141", "54.59", "54.53") ~ "tremblants",
+                                corine_1 %in% c("31.13 ; 51.2", "54.42", "31.213", "51.2") ~ "veget_non_tourb",
+                                corine_1 %in% c("54.42", "54.6", "51.12, 54.6", "51.11") ~ "tourb_erodees",
+                                corine_1 %in% c("51.1111", "51.1134") ~ "tourb_hautes")) -> habitat_TDM
+
+
+# ici la carto complète TDM (6 mai 2021)
+habitat_TDM2 <- sf::st_read(dsn = "../data", layer = "cartographie_tourbieres_climax_2019")
+
+habitat_TDM2 %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         corine_1 = as.factor(corine_1),
+         corine_new = case_when(corine_1 %in% c("22.1", "22.4311", "22.4314", "51.13", "53.14", "53.147") ~ "eau_libre",
+                                corine_1 %in% c("53.2141", "54.59", "54.53") ~ "tremblants",
+                                corine_1 %in% c("31.13 ; 51.2", "31.213", "51.2") ~ "veget_non_tourb",
+                                corine_1 %in% c("54.42", "54.6", "51.12, 54.6", "51.11") ~ "tourb_erodees",
+                                corine_1 %in% c("51.1111", "51.1134") ~ "tourb_hautes"),
+         corine_new = as.factor(corine_new)) -> habitat_TDM2
+
+
+A<-dim(habitat_TDM2)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TDM2 %>%
+  cbind(ID_uniq) -> habitat_TDM2
+
+# st_write(obj = habitat_TDM2, dsn = "../outputs", layer= "habitat_TDM2.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+```
+
+
+
+
+# Contexte
+Ce plan d'échantillonnage "exuvies" sera déployé en 2021 lors d'une "étude-pilote". Elle visera à étudier les effets des différents types d'habitats de reproduction en milieux tourbeux sur la probabilité d'occupation des exuvies de libellules (demoiselles exclues) sur trois réserves naturelles : la Réserve Naturelle Nationalle Tanet Gazon du Faing (RNN TGF), la Réserve Naturelle Nationale de la tourbière de Machais (RNN TDM) et la Réserve Naturelle Régionale de la tourbière des Charmes (RNR TDC). 
+
+
+
+
+# Distribution des habitats favorables au sein des réserves
+
+Les habitats d'accueil potentiel des larves de libellule, obtenus d'après une typologie Corie Landcover, ont été définis par Thibault Hingray et Julien Dabry. Ces cartographies résultantes ont été transmises au CEFE le __10 février 2021__. Sur la RNN de Machais, la cartographie d'habitats, établie selon une approche phytosociologique diffère des deux autres réserves. A noter que plusieurs habitats phytosociologiques (atteignant jusqu'à 3) peuvent alors être intégrés au sein d'un même polygone.
+
+## TGF
+
+Sur la RNN TGF, les habitats favorables sont distribués sur trois secteurs distincts, distants de plusieurs centaines de mètres. Sur ces trois secteurs, la surface et la distribution des habitats favorables diffère ; Au sud, les patchs sont de surface très réduite et concentrés sur une emprise restreinte. Au centre, on observe quelques grandes unités favorables d'un seul habitat. Au Nord, les patchs sont de surface assez variable et assez dispersés.  
+
+```{r echo=FALSE, fig.width=9, fig.height=7}
+habitat_TGF %>%
+  ggplot() +
+  theme_bw() +
+  geom_sf(aes(fill=CD_CORINE)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TGF ") +
+  north(habitat_TGF, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TGF, location = "bottomright", dist = 200, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) 
+  
+
+```
+
+## TDC 
+
+Sur la RNR TDC, plusieurs habitats favorables de surface variable sont regroupés dans une zone centrale. Des patchs d'habitats favorables de surface plus réduite sont dispersés dans d'autres secteurs.
+
+```{r echo=FALSE, fig.width=9, fig.height=7}
+habitat_TDC %>%
+  ggplot() +
+  geom_sf(aes(fill=CD_CORINE)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNR TDC ") +
+  north(habitat_TDC, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TDC, location = "bottomright", dist = 50, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  theme_bw()
+
+```
+
+## TDM
+
+Sur la RNN TDM, des habitats favorables, souvent de grande superficie, sont regroupés dans la tourbière "centrale". Des patchs favorables sont également dispersés sur les pourtours (dite zone "périphérique"). 
+
+```{r echo=FALSE, fig.width=7, fig.height=5}
+habitat_TDM2 %>%
+  ggplot() +
+  geom_sf(aes(fill=corine_1)) +
+  theme_bw() +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TDM ") +
+  north(habitat_TDM, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TDM, location = "bottomright", dist = 200, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) 
+  
+
+```
+
+Compte-tenu de ce nombre d'habitats élevé, des regroupements de certaines habitats ont été réalisés en concertation entre Alixe Badre et Thibault Hingray le __06 mai 2021__ (avec un ajustement le __10 mai 2021__).  
+
+```{r echo=FALSE, fig.width=7, fig.height=5}
+habitat_TDM2 %>%
+  ggplot() +
+  geom_sf(aes(fill=corine_new)) +
+  theme_bw() +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TDM après regroupement") +
+  north(habitat_TDM, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TDM2, location = "bottomright", dist = 200, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) 
+  
+
+```
+
+
+```{r echo=FALSE, fig.width=7, fig.height=5}
+habitat_TDM2 %>%
+  ggplot() +
+  geom_sf(aes(fill=localite)) +
+  theme_bw() +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("localité des patchs d'habitat favorables au sein de la RNN TDM") +
+  north(habitat_TDM, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TDM2, location = "bottomright", dist = 200, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) 
+  
+
+```
+
+
+# Taille des patchs d'habitats favorables
+
+
+## TGF
+
+On peut observer de très nombreux patchs favorables de surface réduite (<100m2) et 7 patchs de grande, voire très grande surface. 
+```{r echo=FALSE, fig.height = 4, fig.width = 9}
+
+habitat_TGF %>%
+  ggplot() +
+  geom_histogram(aes(x=area), fill= "grey", color="black", binwidth = 100) + 
+  theme(axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size=13), 
+        axis.text.y = element_text(size = 13)) +
+  scale_x_continuous(breaks = seq(0,2600,100)) +
+  scale_y_continuous(breaks = seq(0,1000,100)) +
+  theme_bw()
+
+```
+
+En zoomant sur les patchs < 100 m2, on voit que `r nrow(habitat_TGF %>% filter(area<20))` patchs ont une surface de moins de 20 m2. `r nrow(habitat_TGF %>% filter(area<1))` font moins de 1 m2.
+
+```{r echo=FALSE, fig.height = 4, fig.width = 10}
+
+
+habitat_TGF %>%
+  filter(area<100) %>%
+  ggplot() +
+  geom_histogram(aes(x=area), fill= "grey", color="black", binwidth = 5) + 
+  theme(axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size=13), 
+        axis.text.y = element_text(size = 13)) +
+  scale_x_continuous(breaks = seq(0,100,5)) +
+  scale_y_continuous(breaks = seq(0,700,100)) +
+  theme_bw()
+
+```
+
+
+## TDC
+On peut voir de très nombreux patchs favorables de surface réduite (<400m2) et 7 patchs de grande, voire très grande surface. 
+```{r echo=FALSE, fig.height = 4, fig.width = 10}
+
+
+habitat_TDC %>%
+  ggplot() +
+  geom_histogram(aes(x=area), fill= "grey", color="black", binwidth = 20) + 
+  scale_x_continuous(breaks = seq(0,8000,500)) +
+  scale_y_continuous(breaks = seq(0,20,2)) +
+  theme_bw()
+
+```
+
+En zoomant sur les patchs < 100 m2, on voit que `r nrow(habitat_TDC %>% filter(area<20))` patchs ont une surface de moins de 20 m2.
+
+```{r echo=FALSE, fig.height = 4, fig.width = 10}
+
+
+habitat_TDC %>%
+  filter(area<100) %>%
+  ggplot() +
+  geom_histogram(aes(x=area), fill= "grey", color="black", binwidth = 5) + 
+  scale_x_continuous(breaks = seq(0,100,5)) +
+  scale_y_continuous(breaks = seq(0,20,2)) +
+  theme_bw()
+
+```
+
+
+## TDM
+On observe une bonne répartition de la taille des patchs le long du gradient de taille. 
+
+```{r echo=FALSE, fig.height = 4, fig.width = 10}
+
+
+habitat_TDM2 %>%
+  ggplot() +
+  geom_histogram(aes(x=area), fill= "grey", color="black", binwidth = 20) + 
+  scale_x_continuous(breaks = seq(0,7000,500)) +
+  scale_y_continuous(breaks = seq(0,80,2)) +
+  theme_bw()
+
+```
+
+En zoomant sur les patchs < 100 m2, seulement `r nrow(habitat_TDM %>% filter(area<20))` patchs ont une surface de moins de 20 m2.
+
+```{r echo=FALSE, fig.height = 4, fig.width = 10}
+
+
+habitat_TDM2 %>%
+  filter(area<100) %>%
+  ggplot() +
+  geom_histogram(aes(x=area), fill= "grey", color="black", binwidth = 5) + 
+  scale_x_continuous(breaks = seq(0,100,5)) +
+  scale_y_continuous(breaks = seq(0,20,2)) +
+  theme_bw()
+
+```
+
+
+# Placement systématique des placettes par types d'habitats
+
+Des points sont placés de manière systématique au sein de chaque habitat favorable sur chaque réserve. Note : le nombre de points générés diffère parfois à chaque tirage. Nous avons répété le tirage jusqu'à obenir entre 24 et 25 points par type d'habitat.  
+
+## TDC
+
+```{r echo=FALSE, eval=FALSE, include = FALSE}
+habitat_TDC %>%
+ filter(CD_CORINE %in% "22.14") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_22.14_TDC
+
+habitat_TDC %>%
+ filter(CD_CORINE %in% "51.1") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_51.1_TDC
+
+habitat_TDC %>%
+ filter(CD_CORINE %in% "51.111") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_51.111_TDC
+
+habitat_TDC %>%
+ filter(CD_CORINE %in% "54.531") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_54.531_TDC
+
+habitat_TDC %>%
+ filter(CD_CORINE %in% "54.6") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_54.6_TDC
+
+
+rbind(points_22.14_TDC, points_51.1_TDC, points_51.111_TDC, points_54.531_TDC, points_54.6_TDC) -> points_echant_TDC
+
+
+st_write(obj = points_echant_TDC, dsn = "../outputs", layer= "points_echant_TDC.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+points_echant_TDC %>%
+  st_buffer(dist = 3) -> placettes_3m_TDC
+st_write(obj = placettes_3m_TDC, dsn = "../outputs", layer= "placettes_3m_TDC.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+```
+
+```{r results = FALSE}
+placettes_3m_TDC <- st_read(dsn = "../outputs", layer= "placettes_3m_TDC")
+points_echant_TDC <- st_read(dsn = "../outputs", layer= "points_echant_TDC")
+```
+
+```{r fig.width=9, fig.height=7}
+habitat_TDC %>%
+  ggplot() +
+  geom_sf(aes(fill=CD_CORINE)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNR TDC ") +
+  north(habitat_TDC, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TDC, location = "bottomright", dist = 50, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  geom_sf(data = points_echant_TDC, color="orange") +
+  theme_bw()
+
+```
+
+
+## TGF
+
+```{r echo=FALSE, eval=FALSE, include = FALSE}
+habitat_TGF %>%
+ filter(CD_CORINE %in% "51.1111") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_51.1111_TGF
+
+habitat_TGF %>%
+ filter(CD_CORINE %in% "51.13") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_51.13_TGF
+
+habitat_TGF %>%
+ filter(CD_CORINE %in% "54.4223") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_54.4223_TGF
+
+
+habitat_TGF %>%
+  filter(CD_CORINE %in% "54.5") %>%
+  st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_54.5_TGF
+
+habitat_TGF %>%
+ filter(CD_CORINE %in% "54.6") %>%
+ st_sample(size = 24, type="regular") %>%
+  st_sf() -> points_54.6_TGF
+
+
+
+rbind(points_51.1111_TGF, points_51.13_TGF,  points_54.4223_TGF,  points_54.6_TGF) -> points_echant_TGF # note : habitat 54.5 non pris en compte
+
+st_write(obj = points_echant_TGF, dsn = "../outputs", layer= "points_echant_TGF.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+points_echant_TGF %>%
+  st_buffer(dist = 3) -> placettes_3m_TGF
+st_write(obj = placettes_3m_TGF, dsn = "../outputs", layer= "placettes_3m_TGF.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+```
+
+Les habitats "54.5", de taille inférieure à quelques m2 et toujours imbriqués avec d'autres habitats, n'ont pas été pris en compte. 
+
+```{r results=FALSE}
+points_echant_TGF <- st_read(dsn = "../outputs", layer= "points_echant_TGF")
+placettes_3m_TGF <- st_read(dsn = "../outputs", layer= "placettes_3m_TGF")
+```
+
+```{r echo=FALSE, fig.width=9, fig.height=7}
+
+habitat_TGF %>%
+  ggplot() +
+  geom_sf(aes(fill=CD_CORINE)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TGF Sud ") +
+  north(habitat_TGF, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TGF, location = "bottomright", dist = 50, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  geom_sf(data = points_echant_TGF, color="orange") +
+  coord_sf(xlim = c(1001400, 1002000), ylim = c(6784110, 6785000), expand = FALSE) + 
+  theme_bw()
+
+```
+
+```{r echo=FALSE, fig.width=9, fig.height=7}
+habitat_TGF %>%
+  ggplot() +
+  geom_sf(aes(fill=CD_CORINE)) +
+   xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TGF Nord ") +
+  geom_sf(data = points_echant_TGF, color="orange") +
+  coord_sf(xlim = c(1002000, 1003650), ylim = c(6786500, 6787950), expand = FALSE) +
+  north(habitat_TGF, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TGF, location = "bottomright", dist = 50, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  theme_bw()
+
+```
+
+## TDM
+
+```{r echo=FALSE, eval=TRUE, include = FALSE}
+habitat_TDM2 %>%
+ filter(corine_new %in% "eau_libre" & localite %in% 'central') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf()  -> points_eau_libre_TDM_central
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "eau_libre" & localite %in% 'peri') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf()  -> points_eau_libre_TDM_peri
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "tourb_erodees" & localite %in% 'central') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_tourb_erodees_TDM_central
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "tourb_erodees" & localite %in% 'peri') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_tourb_erodees_TDM_peri
+
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "tourb_hautes" & localite %in% 'central') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_tourb_hautes_TDM_central
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "tourb_hautes" & localite %in% 'peri') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_tourb_hautes_TDM_peri
+
+
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "tremblants" & localite %in% 'central') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_tremblants_TDM_central
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "tremblants" & localite %in% 'peri') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_tremblants_TDM_peri
+
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "veget_non_tourb" & localite %in% 'central') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_veget_non_tourb_TDM_central
+
+habitat_TDM2 %>%
+ filter(corine_new %in% "veget_non_tourb" & localite %in% 'peri') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf() -> points_veget_non_tourb_TDM_peri
+
+
+
+rbind(points_eau_libre_TDM_peri, points_tourb_erodees_TDM_peri,  points_tourb_hautes_TDM_peri,  points_tremblants_TDM_peri, points_veget_non_tourb_TDM_peri) -> points_echant_TDM_peri
+
+# st_write(obj = points_echant_TDM_peri, dsn = "../outputs", layer= "points_echant_TDM_peri.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+rbind(points_eau_libre_TDM_central, points_tourb_erodees_TDM_central,  points_tourb_hautes_TDM_central,  points_tremblants_TDM_central, points_veget_non_tourb_TDM_central) -> points_echant_TDM_central
+
+# st_write(obj = points_echant_TDM_central, dsn = "../outputs", layer= "points_echant_TDM_central.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+points_echant_TDM_peri %>%
+  st_buffer(dist = 3) -> placettes_3m_TDM_peri
+# st_write(obj = placettes_3m_TDM_peri, dsn = "../outputs", layer= "placettes_3m_TDM_peri.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+points_echant_TDM_central %>%
+  st_buffer(dist = 3) -> placettes_3m_TDM_central
+# st_write(obj = placettes_3m_TDM_central, dsn = "../outputs", layer= "placettes_3m_TDM_central.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+```
+
+
+```{r results=FALSE}
+placettes_3m_TDM <- st_read(dsn = "../outputs", layer= "placettes_3m_TDM")
+points_echant_TDM <- st_read(dsn = "../outputs", layer= "points_echant_TDM")
+```
+
+
+```{r echo=FALSE, fig.width=10, fig.height=7}
+habitat_TDM2 %>%
+  ggplot() +
+  geom_sf(aes(fill=corine_new)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TDM ") +
+  north(habitat_TGF, symbol=3, scale =0.05, location ="topleft" ) +
+  scalebar(habitat_TDM, location = "bottomright", dist = 50, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  geom_sf(data = points_echant_TDM_peri, color="green") +
+  geom_sf(data = points_echant_TDM_central, color="blue") +
+  theme_bw()
+
+```
+
+

@@ -1,0 +1,24 @@
+model;nPars;AIC;delta;AICwt;cumltvWt
+p(eau+periode+helophytes) psi(.);5;114,62;0,00;0,56;0,56
+p(eau+periode+habitat+helophytes) psi(.);13;117,25;2,63;0,15;0,71
+p(eau+periode+helophytes) psi(habitat);13;117,98;3,35;0,11;0,82
+p(eau+periode+habitat) psi(.);12;119,78;5,16;0,04;0,86
+p(eau+periode) psi(.);4;120,09;5,46;0,04;0,90
+p(periode+eau) psi(.);4;120,09;5,46;0,04;0,94
+p(eau+periode) psi(habitat);12;120,34;5,72;0,03;0,97
+p(eau+periode+helophytes) psi(habitat+site);15;121,70;7,08;0,02;0,98
+p(periode+helophytes+habitat) psi(.);12;121,98;7,36;0,01;1,00
+p(habitat+periode) psi(.);11;126,92;12,30;0,00;1,00
+p(eau+helophytes) psi(.);4;134,50;19,88;0,00;1,00
+p(eau) psi(.);3;137,21;22,59;0,00;1,00
+p(eau+habitat) psi(.);11;138,38;23,76;0,00;1,00
+p(habitat+eau) psi(.);11;138,38;23,76;0,00;1,00
+p(eau) psi(habitat);11;138,47;23,85;0,00;1,00
+p(periode+helophytes) psi(.);4;142,79;28,17;0,00;1,00
+p(habitat+helophytes) psi(.);11;144,89;30,27;0,00;1,00
+p(habitat) psi(.);10;149,39;34,77;0,00;1,00
+p(periode) psi(.);3;157,62;42,99;0,00;1,00
+p(periode_cat) psi(.);5;159,06;44,44;0,00;1,00
+p(helophytes) psi(.);3;167,50;52,88;0,00;1,00
+p(site) psi(.);4;175,57;60,95;0,00;1,00
+p(.) psi(.);2;176,61;61,99;0,00;1,00

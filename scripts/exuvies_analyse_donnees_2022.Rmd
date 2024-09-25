@@ -1,0 +1,1243 @@
+---
+title: "Analyse données exuvies état-zéro 2022-2023"
+author: "Thibaut Couturier"
+output:
+  html_document: null
+  toc: yes
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, options(digits=2))
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(ggspatial)
+library(lubridate)
+library(unmarked)
+
+```
+
+
+Analyse en date du 
+`r Sys.Date()`
+
+
+
+```{r results = FALSE, message=FALSE, warning=FALSE}
+
+# donnees 2022
+
+## RNM
+identifications_2022_RNM<-read_csv2('../data/resultats_RNM_2022_envoiCEFE150922_identifications.csv')
+identifications_2022_RNM %>%
+  select(Placette, No_passage, espece, Abondance...5) %>%
+  rename(placette = Placette,
+         abondance=Abondance...5) -> identifications_2022_RNM
+
+
+#data_RNM_2022<-read_csv2('../data/resultats_RNM_2022_envoiCEFE150922_revu040423.csv')
+
+data_RNM_2022<-read_csv2('../data/resultats_RNM_2022_envoiCEFE150922_revu190423.csv')
+
+data_RNM_2022 %>%
+  mutate(site=as.factor(Site),
+         date = dmy(Date),
+         placette=as.factor(Placette),
+         placette_site=str_c(site, placette, sep='_'),
+         habitat_predominant=as.factor(Habitat_predominant),
+         duree_prospection_mins=as.numeric(stringr::str_sub(duree_prospection, 1, 2)),
+         duree_prospection_sec=as.numeric(stringr::str_sub(duree_prospection, 4, 5)),
+         duree_prospection_ok=(duree_prospection_mins*60+duree_prospection_sec)/60,
+         site='RNM') %>%
+  select(-c(Site, Date, Placette, duree_prospection, duree_prospection_mins, duree_prospection_sec))  %>%
+  rename(duree_prospection=duree_prospection_ok) %>%
+  full_join(identifications_2022_RNM, by=c('placette', 'No_passage')) -> data_RNM_2022_identif
+  
+data_RNM_2022_identif %>%
+  select(placette_site, No_passage, nb_exuvies_anisopteres, espece, abondance) %>%
+  arrange(placette_site,No_passage) -> essai
+
+#ici vérif sur une espèce
+data_RNM_2022_identif %>%
+  group_by(No_passage, placette_site) %>%
+  filter(espece %in% 'leucorrhinia_dubia', .preserve = TRUE) %>%
+  summarise(tot_exuvies=sum(abondance)) %>%
+  mutate(pres_abs = case_when(tot_exuvies>0 ~ 1, TRUE~0)) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, values_from=pres_abs)  -> tab_dubia_TDM_pourvoir
+
+
+## TGF
+identifications_2022_TGF<-read_csv2('../data/donnees_TGF_TDC_2022_identifications_MC0604.csv')
+identifications_2022_TGF %>%
+  select(Placette, No_passage, espece, Abondance...5) %>%
+  rename(placette = Placette,
+         abondance=Abondance...5) %>%
+  mutate(placette=as.factor(placette)) -> identifications_2022_TGF
+
+data_TGF_2022<-read_csv2('../data/donnees_TGF_TDC_2022_MC0604.csv')
+
+data_TGF_2022 %>%
+  mutate(site=as.factor(Site),
+         date = dmy(Date),
+         placette=as.factor(Placette),
+         placette_site=str_c(site, placette, sep='_'),
+         habitat_predominant=as.factor(Habitat_predominant),
+         duree_prospection=as.numeric(duree_prospection),
+         site='TGF') %>%
+  select(-c(Site, Date, Placette))  %>%
+  full_join(identifications_2022_TGF, by=c('placette', 'No_passage')) -> data_TGF_2022_identif
+
+data_TGF_2022_identif %>%
+  select(placette_site, No_passage, nb_exuvies_anisopteres, espece, abondance) %>%
+  arrange(placette_site,No_passage) -> essai2
+
+#write_csv2(essai2, "../outputs/export_data_identif.csv")
+
+#ici vérif sur une espèce
+data_TGF_2022_identif %>%
+  group_by(No_passage, placette_site) %>%
+  filter(espece %in% 'leucorrhinia_dubia', .preserve = TRUE) %>%
+  summarise(tot_exuvies=sum(abondance)) %>%
+  mutate(pres_abs = case_when(tot_exuvies>0 ~ 1, TRUE~0)) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, values_from=pres_abs)  -> tab_dubia_TGF_pourvoir
+
+
+
+# donnees 2023
+
+## TDC
+identifications_2023_TDC<-read_csv2('../data/donnees_TDC_2023_identifications.csv')
+identifications_2023_TDC %>%
+  select(Placette, No_passage, espece, Abondance...5) %>%
+  rename(placette = Placette,
+         abondance=Abondance...5) %>%
+  mutate(placette=as.factor(placette)) -> identifications_2023_TDC
+
+
+data_TDC_2023<-read_csv2('../data/donnees_TDC_2023.csv')
+
+data_TDC_2023 %>%
+  mutate(site=as.factor(Site),
+         date = dmy(Date),
+         placette=as.factor(Placette),
+         placette_site=str_c(site, placette, sep='_'),
+         habitat_predominant_old=Habitat_predominant,
+         habitat_predominant=case_when(habitat_predominant_old%in% 'berge eau libre' ~ 'eau_libre_gr',
+                                       habitat_predominant_old%in% 'groupement a carex rostrata' ~ 'carex_rostrata',
+                                       habitat_predominant_old%in% 'mare vegetalisee' ~ 'mare_vegetalisee_gr',
+                                       habitat_predominant_old%in% 'tourbiere tremblante' ~ 'tourbiere_tremblante_gr'),
+         habitat_predominant=as.factor(habitat_predominant),
+         duree_prospection_mins=as.numeric(stringr::str_sub(duree_prospection, 1, 2)),
+         duree_prospection_sec=as.numeric(stringr::str_sub(duree_prospection, 4, 5)),
+         duree_prospection_ok=(duree_prospection_mins*60+duree_prospection_sec)/60,
+         site='TDC') %>%
+  select(-c(Site, Date, Placette, duree_prospection, duree_prospection_mins, duree_prospection_sec))  %>%
+  rename(duree_prospection=duree_prospection_ok) %>%
+  full_join(identifications_2023_TDC, by=c('placette', 'No_passage')) -> data_TDC_2023_identif
+  
+data_TDC_2023_identif %>%
+  select(placette_site, No_passage, nb_exuvies_anisopteres, espece, abondance) %>%
+  arrange(placette_site,No_passage) -> essai
+
+#ici vérif sur une espèce
+data_TDC_2023_identif  %>%
+  group_by(No_passage, placette_site) %>%
+  filter(espece %in% 'leucorrhinia_dubia', .preserve = TRUE) %>%
+  summarise(tot_exuvies=sum(abondance)) %>%
+  mutate(pres_abs = case_when(tot_exuvies>0 ~ 1, TRUE~0)) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, values_from=pres_abs)  -> tab_dubia_TDC_pourvoir
+
+
+
+#on combine les trois sites :
+
+data_TGF_2022_identif %>%
+  bind_rows(data_RNM_2022_identif, data_TDC_2023_identif) %>%
+  mutate(espece=as.factor(espece),
+         site=as.factor(site),
+  groupe=case_when(espece %in% c('aeshna_subarctica_elisabethae', 'leucorrhinia_dubia', 'somatochlora_arctica', 'somatochlora_alpestris') ~ 'tyrphobionte',
+                             espece %in% c('aeshna_juncea', 'sympetrum_danae') ~ 'tyrphophile',
+                             espece %in% c('cordulia_aenea', 'libellula_quadrimaculata', 'aeshna_cyanea', 'anax_imperator', 'chalcolestes_viridis', 'sympecma_fusca') ~ 'generaliste'),
+         groupe=as.factor(groupe),
+         profondeur_max=as.factor(profondeur_max),
+           profondeur_lin=case_when(profondeur_max == '0' ~ 0,
+                                  profondeur_max == '0_10' ~ 5,
+                                  profondeur_max == '1_10' ~ 5,
+                                  profondeur_max == '10_20' ~ 15,
+                                  profondeur_max == '11_20' ~ 15,
+                                  profondeur_max == '20_30' ~ 25,
+                                  profondeur_max == '21_30' ~ 25,
+                                  profondeur_max == '30_40' ~ 35,
+                                  profondeur_max == '31_40' ~ 35,
+                                  profondeur_max == '40_50' ~ 45,
+                                  profondeur_max == '41_50' ~ 45,
+                                  profondeur_max == '50_60' ~ 55,
+                                  profondeur_max == '51_60' ~ 55,
+                                  profondeur_max == '60_70' ~ 65,
+                                  profondeur_max == '61_70' ~ 65,
+                                  profondeur_max == '71_80' ~ 75,
+                                  profondeur_max == '80_90' ~ 85,
+                                  profondeur_max == '81_90' ~ 85,
+                                  profondeur_max == '91_100' ~ 95,
+                                  profondeur_max == '>100' ~ 105,
+                                  profondeur_max == '100' ~ 100,
+                                  profondeur_max == '70_80' ~ 75,
+                                  profondeur_max == '90_100' ~ 95)) -> data_total
+
+
+
+data_total %>%
+  select(site, profondeur_max, profondeur_lin) -> verifs
+```
+
+
+# Exploration des données
+
+```{r results = FALSE}
+
+# création de tableaux-bilans 
+
+
+data_total %>%
+  group_by(site, placette_site, No_passage) %>%
+  summarise(nb_sp=length(unique(espece[!is.na(espece)])),
+            nb_exuvies=sum(abondance, na.rm=TRUE)) -> bilan
+
+
+bilan %>%
+  group_by(site, placette_site) %>%
+  summarise(nb_passages = length(unique(No_passage)),
+            nb_exuvies =sum(nb_exuvies),
+            positif=case_when(nb_exuvies>0 ~ 1, TRUE ~ 0)) -> bilan_placettes
+
+
+data_total %>%
+  group_by(placette_site) %>%
+  summarise(nb_sp=length(unique(espece[!is.na(espece)]))) -> bilan_placettes_especes
+
+
+
+bilan_placettes %>%
+ left_join(bilan_placettes_especes, by ="placette_site") -> bilan_placettes
+
+
+bilan %>%
+  group_by(site) %>%
+  summarise(tot_exuvies=sum(nb_exuvies),
+            tot_placettes=length(unique(placette_site))) -> bilan_sites
+
+
+data_total %>%
+  group_by(espece, site) %>%
+  summarise(tot_exuvies=sum(abondance, na.rm=TRUE),
+            tot_placettes=length(unique(placette_site))) %>%
+  filter(!is.na(espece)) %>%
+  pivot_wider(id_cols=espece,  names_from=site, values_from=c(tot_exuvies, tot_placettes), values_fill=0) %>%
+  arrange(espece) -> bilan_especes
+
+write_csv2(bilan_especes, "../outputs/bilan_especes_Vosges_2022.csv")
+
+data_total%>% 
+  filter(site%in%'RNM')%>%
+  select(duree_prospection) -> duree_RNM
+
+
+```
+
+
+`r nrow(bilan_placettes)` placettes ont été échantillonnées sur les `r length(levels(data_total$site))` sites. Toutes ont fait l'objet de trois passages. Les placettes ont été échantillonnées aux dates suivantes : 
+
+```{r}
+data_total %>%
+  select(site, date, No_passage) %>%
+  group_by(date, site) %>%
+  summarise(passage1=length(No_passage[No_passage==1]),
+            passage2=length(No_passage[No_passage==2]),
+            passage3=length(No_passage[No_passage==3])) %>%
+  knitr::kable()
+
+```
+
+
+`r sum(bilan_placettes$positif)` placettes étaient positives, c'est-à-dire avec au moins une exuvie collectée au cours des différents passages. 
+
+
+## Abondances exuvies (placettes positives uniquement)
+
+Au total, `r sum(data_total$abondance, na.rm=TRUE)` exuvies d'anisoptères ont été collectées.  
+
+
+```{r echo=FALSE,fig.width=11, fig.height=4}
+bilan_placettes %>%
+  filter(nb_exuvies>0) %>%
+  ggplot() +
+  theme_bw() +
+  facet_wrap(~site)+
+  geom_histogram(aes(x=nb_exuvies),  binwidth=0.5) +
+  theme(axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size=12),
+        axis.text.x = element_text(size=9), 
+        axis.text.y = element_text(size=8),
+        legend.title = element_text(colour="black", size=12)) +
+  xlab("nombre d'exuvies (parcelles négatives exclues)") +
+  ylab("nombre de placettes") 
+```
+
+
+## Richesses placettes (placettes positives uniquement)
+```{r echo=FALSE,fig.width=7, fig.height=3}
+bilan_placettes %>%
+  filter(nb_exuvies>0) %>%
+  ggplot() +
+  theme_bw() +
+  facet_wrap(~site) +
+  geom_histogram(aes(x=nb_sp),  binwidth=0.5) +
+  theme(axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size=12),
+        axis.text.x = element_text(size=9), 
+        axis.text.y = element_text(size=8),
+        legend.title = element_text(colour="black", size=12)) +
+  xlab("nombre d'espèces (parcelles négatives exclues)") +
+  ylab("nombre de placettes") 
+```
+
+
+## Bilan par espèce et par site
+
+```{r}
+bilan_especes %>% 
+  knitr::kable()
+```
+
+## Durées de prospection
+
+Le temps de prospection moyen des placettes sur la RNM est de `r mean(duree_RNM$duree_prospection, na.rm=TRUE)` minutes (sd =`r sd(duree_RNM$duree_prospection, na.rm=TRUE)`). On observe deux "lots"(moins de 15 mins et plus de 15 mins) concernant ces durées de prospection (raison ?).    
+Notons que sur TGF, les durées de prospection ont toutes été renseignées à 5 minutes.  
+
+
+```{r results = FALSE, fig.width=8, fig.height=4}
+data_total %>%
+  ggplot() +
+  theme_bw() +
+  facet_wrap(~site) +
+  geom_histogram(aes(x=duree_prospection)) +
+  theme(axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size=12),
+        axis.text.x = element_text(size=9), 
+        axis.text.y = element_text(size=8),
+        legend.title = element_text(colour="black", size=12)) +
+  xlab("temps de prospection total (mins)") +
+  ylab("nombre de placettes") 
+
+```
+
+Sur RNM, on n'observe pas de différence de durée de prospection selon la typologie d'habitat.  
+
+```{r results = FALSE, fig.width=8, fig.height=7}
+data_total %>%
+  filter(site%in%'RNM') %>%
+  ggplot() +
+  theme_bw() +
+  facet_wrap(~habitat_predominant) +
+  geom_histogram(aes(x=duree_prospection)) +
+  theme(axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size=12),
+        axis.text.x = element_text(size=9), 
+        axis.text.y = element_text(size=8),
+        legend.title = element_text(colour="black", size=12)) +
+  xlab("temps de prospection total (mins)") +
+  ylab("nombre de placettes") 
+
+```
+
+
+```{r results = FALSE, fig.width=9, fig.height=6}
+data_total %>%
+  filter(site%in%'RNM') %>%
+  ggplot() +
+  theme_bw() +
+  geom_boxplot(aes(x=habitat_predominant, y=duree_prospection)) +
+  theme(axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size=12),
+        axis.text.x = element_text(size=12, angle=90), 
+        axis.text.y = element_text(size=12),
+        legend.title = element_text(colour="black", size=12)) +
+  ylab("durée de prospection par placette (mins)") +
+  xlab("habitat prédominant") 
+
+```
+
+## Cartos placettes
+
+```{r results = "hide", message=FALSE, warning=FALSE}
+
+# chargement des fonds cartos (repris de "exuvie_sampling.Rmd")
+
+contour_RN <- sf::st_read(dsn = "../data", layer = "RNN_selectTC")
+
+
+############ autre carto
+
+# TGF 
+habitat_TGF <- sf::st_read(dsn = "../data", layer = "RNNTGF_CEFE_exporthabitatfavorable")
+
+A<-dim(habitat_TGF)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TGF %>%
+  cbind(ID_uniq) -> habitat_TGF
+
+habitat_TGF %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         CD_CORINE = as.factor(CD_CORINE),
+         LB_HABITAT = as.factor(LB_HABITAT),
+         habitat_groupe_2022=case_when(LB_HABITAT%in%c("Fosse d'extraction", "Mare d'eau libre")  ~ 'eau_libre_gr', 
+                               LB_HABITAT%in% c('mare à Sphagnum cuspidatum', 'Mare à Sphaignes vertes' ,'Mares à Sphaignes et Carex')  ~ 'mare_vegetalisee_gr'),
+         habitat_groupe_2022=as.factor(habitat_groupe_2022)) -> habitat_TGF
+
+
+# TDC 
+habitat_TDC <- sf::st_read(dsn = "../data", layer = "RNRTdC_CEFE_exporthabitatfavorable")
+
+A<-dim(habitat_TDC)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TDC %>%
+  cbind(ID_uniq) -> habitat_TDC
+
+habitat_TDC %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         CD_CORINE = as.factor(CD_CORINE),
+         LB_HABITAT = as.factor(LB_HABITAT),
+         habitat_groupe_2022=case_when(LB_HABITAT%in%'Eau libre'  ~ 'eau_libre_gr',
+                                LB_HABITAT%in%c('Mares à Sphagnum cuspidatum et Scheuchzérie','Mares à Sphaignes vertes')  ~ 'mare_vegetalisee_gr',
+                                LB_HABITAT%in%c('Groupements à Sphaignes rouges', "Tourbières tremblantes en cours d'ombrotrophisati*")  ~ 'tourbiere_tremblante_gr',
+                                LB_HABITAT%in%c('Groupements à Carex rostrata') ~ 'groupement_a_carex_rostrata'),
+         habitat_groupe_2022=as.factor(habitat_groupe_2022)) -> habitat_TDC
+
+# TDM
+habitat_TDM <- sf::st_read(dsn = "../data", layer = "cartographie_tourbieres_climax_2019")
+
+habitat_TDM %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         corine_1 = as.factor(corine_1),
+         corine_new = case_when(corine_1 %in% c("22.1", "22.4311", "22.4314", "51.13", "53.14", "53.147") ~ "eau_libre",
+                                corine_1 %in% c("53.2141", "54.59", "54.53") ~ "tremblants",
+                                corine_1 %in% c("31.13 ; 51.2", "31.213", "51.2") ~ "veget_non_tourb",
+                                corine_1 %in% c("54.42", "54.6", "51.12, 54.6", "51.11") ~ "tourb_erodees",
+                                corine_1 %in% c("51.1111", "51.1134") ~ "tourb_hautes"),
+         corine_new = as.factor(corine_new),
+         habitat_groupe_2022=case_when(corine_new%in%c('eau_libre', 'mare_d_eau_libre', 'fosse_d_extraction')  ~ 'eau_libre_gr',
+                                corine_new%in%c('mare_a_scheuchzerie','mare_a_sphaigne_rouges','mare_a_sphaignes')  ~ 'mare_vegetalisee_gr', 
+                                corine_new%in%c('groupement_a_sphaignes_rouges','tourbiere_tremblante','tremblants')  ~ 'tourbiere_tremblante_gr',
+                                corine_new%in%'tourb_erodees'  ~ 'tourbiere_erodee',
+                                corine_new%in%'groupement_a_carex_rostrata'  ~ 'groupement_a_carex_rostrata'),
+         habitat_groupe_2022=as.factor(habitat_groupe_2022)) -> habitat_TDM
+
+
+A<-dim(habitat_TDM)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TDM %>%
+  cbind(ID_uniq) -> habitat_TDM
+
+
+
+
+```
+
+
+TGF
+
+```{r results=FALSE, fig.width=9, fig.height=9}
+
+placettes_TGF <- sf::st_read(dsn = "../data", layer = "TGF_2022")
+
+habitat_TGF %>%
+  filter(!is.na(habitat_groupe_2022)) %>%
+  ggplot() +
+  theme_bw() +
+  geom_sf(aes(fill=habitat_groupe_2022), alpha=1) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  #ggtitle("habitats TGF et placettes 2022") +
+  ggspatial::annotation_scale(location = "br", width_hint = 0.3, text_cex = 1) + 
+  ggspatial::annotation_north_arrow(location = "tl", pad_x = unit(0.2, "in"), pad_y = unit(0.2, "in"), width = unit(1, "cm")) +
+  geom_sf(data = placettes_TGF, color="orange")
+  
+
+```
+
+
+
+TDM 
+
+```{r results=FALSE, fig.width=9, fig.height=7}
+
+placettes_TDM <- sf::st_read(dsn = "../data", layer = "placettes_CEFE_2022_L93")
+
+
+habitat_TDM %>%
+  filter(!is.na(habitat_groupe_2022)) %>%
+  ggplot() +
+  geom_sf(aes(fill=habitat_groupe_2022), alpha=1) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  #ggtitle("habitats TDM et placettes réalisées en 2022") +
+  ggspatial::annotation_scale(location = "br", width_hint = 0.2, text_cex = 1) + 
+  ggspatial::annotation_north_arrow(location = "tl", pad_x = unit(0.2, "in"), pad_y = unit(0.2, "in"), width = unit(1, "cm")) +
+  geom_sf(data = placettes_TDM, color="black") +
+  theme_bw()
+
+
+
+```
+
+
+TDC
+
+```{r eval=FALSE, fig.width=9, fig.height=7}
+
+placettes_TDC <- sf::st_read(dsn = "../data", layer = "Placettes_finales_2023")
+
+
+habitat_TDC %>%
+  filter(!is.na(habitat_groupe_2022)) %>%
+  ggplot() +
+  geom_sf(aes(fill=habitat_groupe_2022), alpha=1) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  #ggtitle("habitats TDM et placettes réalisées en 2022") +
+  ggspatial::annotation_scale(location = "br", width_hint = 0.3, text_cex = 1) + 
+  ggspatial::annotation_north_arrow(location = "tl", pad_x = unit(0.2, "in"), pad_y = unit(0.2, "in"), width = unit(1, "cm")) +
+  geom_sf(data = placettes_TDC, color="black") +
+  theme_bw()
+
+
+
+```
+
+## Bilans selon variables terrain 
+
+### Typologies habitats 
+```{r}
+
+data_total %>%
+  group_by(habitat_predominant, site) %>%
+  summarise(tot_exuvies=sum(abondance, na.rm=TRUE),
+            tot_placettes=length(unique(placette))) %>%
+  filter(!is.na(site)) %>%
+  pivot_wider(id_cols=habitat_predominant,  names_from=site, values_from=c(tot_exuvies, tot_placettes), values_fill=0) -> bilan_habitats
+
+
+#write_csv2(bilan_habitats, "bilan_habitats_2022.csv")
+
+
+```
+
+
+```{r }
+bilan_habitats %>%
+  knitr::kable()
+```
+
+
+
+## Phénologie
+
+
+```{r fig.width=8, fig.height=4}
+data_total %>%
+  filter(!is.na(espece)) %>%
+  ggplot() +
+  geom_point(aes(date, espece, color=groupe), size = 2) + 
+  theme_bw() +
+  facet_wrap(~site) +
+  xlab("Date") +
+  ylab("Espèces") +
+  scale_x_date(date_breaks = "1 month") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
+
+
+
+# Modélisation
+
+
+## Vérification des corrélations entre covariables
+```{r results=FALSE}
+data_total %>%
+  select(Eau_libre, Helophytes, profondeur_lin) %>%
+  filter(!is.na(profondeur_lin)) -> covar_select_cor
+
+data_total %>%
+  filter(is.na(profondeur_lin)) -> essai_NA
+
+corcovs<-cor(covar_select_cor, method = 'pearson')
+```
+
+La profondeur (linéaire) et la présence d'eau sont fortement corrélées ; ces deux variables ne seront pas ajustées sur le même paramètre d'un même modèle. 
+```{r }
+corcovs %>%
+  knitr::kable()
+```
+
+
+## Préparation des données pour unmarked
+Trois jeux de données sont préparés, avec regroupement d'espèces : libellules tyrphobiontes, tyrpohophiles, et généralistes/tolérantes.   
+
+
+```{r fig.height=3, fig.width=6}
+
+# histoires de détection
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  filter(groupe %in% 'tyrphobionte', .preserve = TRUE) %>%
+  summarise(tot_exuvies=sum(abondance)) %>%
+  mutate(pres_abs = case_when(tot_exuvies>0 ~ 1, TRUE~0)) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, values_from=pres_abs) %>%
+  arrange(placette_site)  -> tab_tyrphobiontes
+
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  filter(groupe %in% 'tyrphophile', .preserve = TRUE) %>%
+  summarise(tot_exuvies=sum(abondance)) %>%
+  mutate(pres_abs = case_when(tot_exuvies>0 ~ 1, TRUE~0)) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, values_from=pres_abs) %>%
+  arrange(placette_site)  -> tab_tyrphophiles
+
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  filter(groupe %in% 'generaliste', .preserve = TRUE) %>%
+  summarise(tot_exuvies=sum(abondance)) %>%
+  mutate(pres_abs = case_when(tot_exuvies>0 ~ 1, TRUE~0)) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, values_from=pres_abs) %>%
+  arrange(placette_site) -> tab_generalistes
+
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  filter(espece %in% 'leucorrhinia_dubia', .preserve = TRUE) %>%
+  summarise(tot_exuvies=sum(abondance)) %>%
+  mutate(pres_abs = case_when(tot_exuvies>0 ~ 1, TRUE~0)) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, values_from=pres_abs) %>%
+  arrange(placette_site)  -> tab_dubia
+
+
+
+# covars site
+
+## nom du site
+data_total %>%
+  group_by(placette_site) %>%
+  slice(1) %>%
+  summarise(site=site) %>%
+  arrange(placette_site) -> site
+
+## habitat
+data_total %>%
+  group_by(placette_site) %>%
+  slice(1) %>%
+  summarise(habitat=habitat_predominant) %>%
+  arrange(placette_site) -> habitat
+
+
+# covars sessions 
+
+## période
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  slice(1) %>%
+  summarise(period=No_passage) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, names_prefix="per", values_from=period) %>%
+  arrange(placette_site)  -> cov_periode
+
+## presence eau
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  slice(1) %>%
+  summarise(eau=Eau_libre) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, names_prefix="eau", values_from=eau) %>%
+  arrange(placette_site) -> cov_eau
+
+## presence helophytes
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  slice(1) %>%
+  summarise(helo=Helophytes) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, names_prefix="helo", values_from=helo) %>%
+  arrange(placette_site)  -> cov_helo
+
+## profondeur
+data_total %>%
+  group_by(No_passage, placette_site) %>%
+  slice(1) %>%
+  summarise(prof=profondeur_lin) %>%
+  pivot_wider(id_cols=placette_site,  names_from=No_passage, names_prefix="prof", values_from=prof) %>%
+  arrange(placette_site)  -> cov_prof
+
+## profondeur effet site
+cov_prof %>%
+  rowwise() %>%
+  summarise(placette_site=placette_site,
+            max_prof=max(c(prof1,prof2,prof3), na.rm=TRUE)) -> max_prof
+
+## eau en présabs effet site
+max_prof %>%
+  mutate(presabs_eau=case_when(max_prof>0 ~ 1, TRUE ~ 0)) %>%
+  select(-max_prof) -> presabs_eau
+
+## on regroupe toutes les données et covars par id placette pour s'assurer qu'il n'y ait pas d'erreur 
+tab_tyrphobiontes %>%
+  left_join(habitat, by='placette_site') %>%
+  left_join(site, by='placette_site') %>%
+  left_join(cov_periode, by='placette_site') %>%
+  left_join(cov_eau, by='placette_site') %>%
+  left_join(cov_helo, by='placette_site') %>%
+  left_join(cov_prof, by='placette_site') %>%
+  left_join(max_prof, by='placette_site')  %>%
+  left_join(presabs_eau, by='placette_site') -> tab_tyrphobiontes_tot
+
+tab_tyrphophiles %>%
+  left_join(habitat, by='placette_site') %>%
+  left_join(site, by='placette_site') %>%
+  left_join(cov_periode, by='placette_site') %>%
+  left_join(cov_eau, by='placette_site') %>%
+  left_join(cov_helo, by='placette_site') %>%
+  left_join(cov_prof, by='placette_site') %>%            
+  left_join(max_prof, by='placette_site') %>%
+  left_join(presabs_eau, by='placette_site') -> tab_tyrphophiles_tot
+
+tab_generalistes %>%
+  left_join(habitat, by='placette_site') %>%
+  left_join(site, by='placette_site') %>%
+  left_join(cov_periode, by='placette_site') %>%
+  left_join(cov_eau, by='placette_site') %>%
+  left_join(cov_helo, by='placette_site') %>%
+  left_join(cov_prof, by='placette_site') %>%            
+  left_join(max_prof, by='placette_site') %>%
+  left_join(presabs_eau, by='placette_site') -> tab_generalistes_tot
+
+tab_dubia %>%
+  left_join(habitat, by='placette_site') %>%
+  left_join(site, by='placette_site') %>%
+  left_join(cov_periode, by='placette_site') %>%
+  left_join(cov_eau, by='placette_site') %>%
+  left_join(cov_helo, by='placette_site') %>%
+  left_join(cov_prof, by='placette_site') %>%            
+  left_join(max_prof, by='placette_site') %>%
+  left_join(presabs_eau, by='placette_site') -> tab_dubia_tot
+
+
+# les histoires de détection et covars pour unmarked
+y_tyrphobiontes<-as.matrix(tab_tyrphobiontes_tot[,2:4])
+siteCovs<-as.data.frame(tab_tyrphobiontes_tot%>%select(habitat, site, max_prof, presabs_eau))
+periode<-as.data.frame(tab_tyrphobiontes_tot%>%select(per1, per2, per3))
+eau<-as.data.frame(tab_tyrphobiontes_tot%>%select(eau1, eau2, eau3))
+helo<-as.data.frame(tab_tyrphobiontes_tot%>%select(helo1, helo2, helo3))
+prof<-as.data.frame(tab_tyrphobiontes_tot%>%select(prof1, prof2, prof3))
+obsCovs<-list(periode=periode, eau=eau, helo=helo, prof=prof)
+umf_tyrphobiontes<-unmarkedFrameOccu(y=y_tyrphobiontes, siteCovs=siteCovs, obsCovs=obsCovs)
+
+y_tyrphophiles<-as.matrix(tab_tyrphophiles_tot[,2:4])
+siteCovs<-as.data.frame(tab_tyrphophiles_tot%>%select(habitat, site, max_prof, presabs_eau))
+periode<-as.data.frame(tab_tyrphophiles_tot%>%select(per1, per2, per3))
+eau<-as.data.frame(tab_tyrphophiles_tot%>%select(eau1, eau2, eau3))
+helo<-as.data.frame(tab_tyrphophiles_tot%>%select(helo1, helo2, helo3))
+prof<-as.data.frame(tab_tyrphophiles_tot%>%select(prof1, prof2, prof3))
+obsCovs<-list(periode=periode, eau=eau, helo=helo, prof=prof)
+umf_tyrphophiles<-unmarkedFrameOccu(y=y_tyrphophiles, siteCovs=siteCovs, obsCovs=obsCovs)
+
+y_generalistes<-as.matrix(tab_generalistes_tot[,2:4])
+siteCovs<-as.data.frame(tab_generalistes_tot%>%select(habitat, site, max_prof, presabs_eau))
+periode<-as.data.frame(tab_generalistes_tot%>%select(per1, per2, per3))
+eau<-as.data.frame(tab_generalistes_tot%>%select(eau1, eau2, eau3))
+helo<-as.data.frame(tab_generalistes_tot%>%select(helo1, helo2, helo3))
+prof<-as.data.frame(tab_generalistes_tot%>%select(prof1, prof2, prof3))
+obsCovs<-list(periode=periode, eau=eau, helo=helo, prof=prof)
+umf_generalistes<-unmarkedFrameOccu(y=y_generalistes, siteCovs=siteCovs, obsCovs=obsCovs)
+
+y_dubia<-as.matrix(tab_dubia_tot[,2:4])
+siteCovs<-as.data.frame(tab_dubia_tot%>%select(habitat, site, max_prof, presabs_eau))
+periode<-as.data.frame(tab_dubia_tot%>%select(per1, per2, per3))
+eau<-as.data.frame(tab_dubia_tot%>%select(eau1, eau2, eau3))
+helo<-as.data.frame(tab_dubia_tot%>%select(helo1, helo2, helo3))
+prof<-as.data.frame(tab_dubia_tot%>%select(prof1, prof2, prof3))
+obsCovs<-list(periode=periode, eau=eau, helo=helo, prof=prof)
+umf_dubia<-unmarkedFrameOccu(y=y_dubia, siteCovs=siteCovs, obsCovs=obsCovs)
+
+```
+
+## Tyrphobiontes 
+
+### Sélection de modèles 
+```{r results=FALSE}
+# sélection de modèles
+
+## detection
+res1<-occu(~1 ~1, data=umf_tyrphobiontes)
+res2<-occu(~periode ~1, data=umf_tyrphobiontes)
+res3<-occu(~as.factor(periode) ~1, data=umf_tyrphobiontes) #
+res4<-occu(~eau ~1, data=umf_tyrphobiontes) #
+res5<-occu(~site ~1, data=umf_tyrphobiontes) #
+res6<-occu(~habitat ~1, data=umf_tyrphobiontes)
+res7<-occu(~helo ~1, data=umf_tyrphobiontes)
+res8<-occu(~prof ~1, data=umf_tyrphobiontes) #
+
+res9<-occu(~as.factor(periode) + eau ~1, data=umf_tyrphobiontes) 
+res10<-occu(~as.factor(periode) + site ~1, data=umf_tyrphobiontes)
+res11<-occu(~as.factor(periode) + prof ~1, data=umf_tyrphobiontes)
+res12<-occu(~eau+site ~1, data=umf_tyrphobiontes) 
+res13<-occu(~site+prof ~1, data=umf_tyrphobiontes) 
+
+res14<-occu(~as.factor(periode) + eau + site ~1, data=umf_tyrphobiontes) ## BEST
+res15<-occu(~as.factor(periode) + site + prof ~1, data=umf_tyrphobiontes)
+
+# occupation (avec meilleur modèle détection)
+
+res16<-occu(~as.factor(periode) + eau + site ~ habitat, data=umf_tyrphobiontes)
+res17<-occu(~as.factor(periode) + eau + site ~ site, data=umf_tyrphobiontes)
+res18<-occu(~as.factor(periode) + eau + site ~ scale(max_prof), data=umf_tyrphobiontes)
+res19<-occu(~as.factor(periode) + eau + site ~ presabs_eau, data=umf_tyrphobiontes)
+res20<-occu(~as.factor(periode) + eau + site ~ scale(max_prof)+site, data=umf_tyrphobiontes) ## BEST
+
+# tests (retraits variable sur détection)
+res21<-occu(~ eau + site ~ scale(max_prof)+site, data=umf_tyrphobiontes)
+res22<-occu(~as.factor(periode) + site ~ scale(max_prof)+site, data=umf_tyrphobiontes)
+res23<-occu(~as.factor(periode) + eau  ~ scale(max_prof)+site, data=umf_tyrphobiontes)
+
+
+
+mods_occu <- fitList('p(.) psi(.)'=res1, 
+                     'p(periode) psi(.)'=res2, 
+                     'p(periode_cat) psi(.)'=res3, 
+                     'p(eau) psi(.)'=res4,
+                     'p(site) psi(.)'=res5,
+                     'p(habitat) psi(.)'=res6,
+                     'p(helophytes) psi(.)'=res7,
+                     'p(profondeur) psi(.)'=res8,
+                     'p(periode_cat+eau) psi(.)'=res9,
+                     'p(periode_cat+site) psi(.)'=res10,
+                     'p(periode_cat+profondeur) psi(.)'=res11,
+                     'p(eau+site) psi(.)'=res12,
+                     'p(site+profondeur) psi(.)'=res13,
+                     'p(periode_cat+eau+site) psi(.)'=res14,
+                     'p(periode_cat+site+profondeur) psi(.)'=res15,
+                     'p(periode_cat+eau+site) psi(habitat)'=res16,
+                     'p(periode_cat+eau+site) psi(site)'=res17,
+                     'p(periode_cat+eau+site) psi(profondeur_max)'=res18,
+                     'p(periode_cat+eau+site) psi(eau)'=res19,
+                     'p(periode_cat+eau+site) psi(profondeur_max+site)'=res20)
+
+
+table_AIC_occu<-modSel(mods_occu)
+table_AIC_occu<-as(table_AIC_occu, "data.frame")
+
+
+table_AIC_occu %>%
+  select(model, n, nPars, AIC, delta, AICwt) -> table_AIC_occu
+
+# write.csv2(table_AIC_occu, "table_AIC_occu_tyrphobiontes.csv")
+
+```
+
+```{r}
+table_AIC_occu 
+```
+
+Le modèle retenu est celui prenant en compte l'effet de la période, de la présence d'eau et du site  sur la probabilité de détection, et de la profondeur et du site sur la probabilité d'occupation des tyrphobiontes.  
+
+### Prédictions
+```{r results=FALSE}
+# constant 
+p_res1<-backTransform(res1, type="det")
+p_res1 
+IC_p_res1<-plogis(confint(res1, type='det'))
+
+psi_res1<-backTransform(res1, type="state")
+psi_res1 
+IC_psi_res1<-plogis(confint(res1, type='state'))
+IC_psi_res1
+
+
+#psi_res9<-backTransform(res9, type="state")
+#IC_psi_res9<-plogis(confint(res9, type='state'))
+
+
+
+```
+La probabilité d'occupation moyenne des tyrphobiontes estimée par le modèle constant est psi = `r psi_res1@estimate` [IC95% `r IC_psi_res1[1]`-`r IC_psi_res1[2]`]. La probabilité de détection des tyrphobiontes estimée par le modèle constant est p = `r p_res1@estimate` [IC95% `r IC_p_res1[1]`-`r IC_p_res1[2]`].
+
+
+__Meilleur modèle__ :  
+La probabilité de détection diminue fortement en juillet et août, et lorsqu'il y a absence d'eau. On observe une diminution de la probabilité d'occupation avec les fortes valeurs de hauteur d'eau maximale (hauteur d'eau lors de la session où le niveau est le plus élevé). 
+
+
+```{r results=FALSE, fig.width=6, fig.height=6}
+# periode ,eau, site
+newData <- data.frame(periode = c(1,2,3),
+                      eau=c(0,0,0, 1,1,1, 0,0,0, 1,1,1, 0,0,0, 1,1,1), 
+                      site=c('TDC','TDC','TDC', 'TDC','TDC','TDC', 'TGF', 'TGF', 'TGF', 'TGF', 'TGF', 'TGF', 'RNM', 'RNM', 'RNM', 'RNM', 'RNM', 'RNM'))
+res20_pred <- predict(res20, type = "det", newdata = newData, appendData = TRUE)
+
+
+res20_pred %>%
+  as.data.frame() %>%
+  ggplot() +
+  facet_grid(~site ~ eau) +
+  theme_bw() +
+  geom_errorbar(aes(x=periode, y=Predicted, ymin=lower, ymax=upper), width=.1,
+              position=position_dodge(.9)) +
+  geom_bar(aes(x=periode, y=Predicted), stat="identity", fill="forestgreen", alpha=.5, width=.5) +
+  theme(axis.title.x = element_text(size = 13),
+        axis.title.y = element_text(size = 13),
+        axis.text.x = element_text(size=12), 
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(colour="black", size=11),
+        legend.text = element_text(size=10)) +
+  xlab("période") +
+  ylab("probabilité de détection (p)") 
+```
+
+```{r results=FALSE, fig.width=6, fig.height=5}
+
+newData <- data.frame(max_prof = seq(from=min(max_prof$max_prof), to=max(max_prof$max_prof)),
+                      site=c(rep('TDC',106), rep('TGF',106), rep('RNM',106)))
+res20_pred_psi <- predict(res20, type = "state", newdata = newData, appendData = TRUE)
+
+
+res20_pred_psi %>%
+  as.data.frame() %>%
+  ggplot() +
+  theme_bw() +
+  facet_wrap(~site) +
+  geom_ribbon(aes(x=max_prof, ymin=lower, ymax=upper, fill= site), alpha=0.4) +
+  geom_line(aes(x=max_prof, y=Predicted, color=site),  alpha=.5, width=.5) +
+  theme(axis.title.x = element_text(size = 13),
+        axis.title.y = element_text(size = 13),
+        axis.text.x = element_text(size=12), 
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(colour="black", size=11),
+        legend.text = element_text(size=10)) +
+  geom_rug(data = max_prof, aes(x=max_prof), col="black",alpha=0.02, size=5) +
+  xlab("profondeur maximale") +
+  ylab("probabilité d'occupation (psi)") 
+```
+
+## Tyrphophiles 
+
+### Sélection de modèles
+```{r results=FALSE}
+# sélection de modèles
+
+## detection
+res1<-occu(~1 ~1, data=umf_tyrphophiles)
+res2<-occu(~periode ~1, data=umf_tyrphophiles)
+res3<-occu(~as.factor(periode) ~1, data=umf_tyrphophiles) #
+res4<-occu(~eau ~1, data=umf_tyrphophiles) #
+res5<-occu(~site ~1, data=umf_tyrphophiles) #
+res6<-occu(~habitat ~1, data=umf_tyrphophiles) #
+res7<-occu(~helo ~1, data=umf_tyrphophiles)
+res8<-occu(~prof ~1, data=umf_tyrphophiles) #
+
+res9<-occu(~as.factor(periode) + eau ~1, data=umf_tyrphophiles) #
+res9b<-occu(~periode + eau ~1, data=umf_tyrphophiles) 
+res10<-occu(~as.factor(periode) + site ~1, data=umf_tyrphophiles)
+res11<-occu(~as.factor(periode) + prof ~1, data=umf_tyrphophiles)
+res12<-occu(~as.factor(periode)+habitat ~1, data=umf_tyrphophiles)
+res13<-occu(~eau+site ~1, data=umf_tyrphophiles) 
+res14<-occu(~eau+habitat ~1, data=umf_tyrphophiles) 
+res15<-occu(~site+prof ~1, data=umf_tyrphophiles)
+res16<-occu(~site+habitat ~1, data=umf_tyrphophiles) 
+
+res17<-occu(~as.factor(periode) + eau + site ~1, data=umf_tyrphophiles) 
+res18<-occu(~as.factor(periode) + eau + as.factor(habitat) ~1, data=umf_tyrphophiles) 
+
+
+
+# occupation (avec meilleur modèle détection)
+
+res19<-occu(~as.factor(periode) + eau + site ~ habitat, data=umf_tyrphophiles) 
+res20<-occu(~as.factor(periode) + eau + site ~ site, data=umf_tyrphophiles) 
+res21<-occu(~as.factor(periode) + eau + site ~ scale(max_prof), data=umf_tyrphophiles) 
+res22<-occu(~as.factor(periode) + eau + site ~ presabs_eau, data=umf_tyrphophiles)
+
+
+
+mods_occu <- fitList('p(.) psi(.)'=res1, 
+                     'p(periode) psi(.)'=res2, 
+                     'p(periode_cat) psi(.)'=res3, 
+                     'p(eau) psi(.)'=res4,
+                     'p(site) psi(.)'=res5,
+                     'p(habitat) psi(.)'=res6,
+                     'p(helophytes) psi(.)'=res7,
+                     'p(profondeur) psi(.)'=res8,
+                     'p(periode_cat+eau) psi(.)'=res9,
+                     'p(periode_cat+site) psi(.)'=res10,
+                     'p(periode_cat+profondeur) psi(.)'=res11,
+                     'p(periode_cat+habitat) psi(.)'=res12,
+                     'p(eau+site) psi(.)'=res13,
+                     'p(eau+habitat) psi(.)'=res14,
+                     'p(site+profondeur) psi(.)'=res15,
+                     'p(site+habitat) psi(.)'=res16,
+                     'p(periode_cat+eau+site) psi(.)'=res17,
+                     'p(periode_cat+eau+habitat) psi(.)'=res18,
+                     'p(periode_cat+eau+site) psi(habitat)'=res19,
+                     'p(periode_cat+eau+site) psi(site)'=res20,
+                     'p(periode_cat+eau+site) psi(profondeur_max)'=res21,
+                     'p(periode_cat+eau+site) psi(eau)'=res22)
+
+
+table_AIC_occu<-modSel(mods_occu)
+table_AIC_occu<-as(table_AIC_occu, "data.frame") 
+
+table_AIC_occu %>%
+  select(model, n, nPars, AIC, delta, AICwt) -> table_AIC_occu
+
+# write.csv2(table_AIC_occu, "table_AIC_occu_tyrphophiles.csv")
+
+```
+
+```{r}
+table_AIC_occu 
+```
+
+Le meilleur modèle intègre des effets additifs de la période, de la présence d'eau et du site sur la probabilité de détection et un effet de la profondeur maximale d'eau (parmi les trois visites) sur la probabilité d'occupation des tyrphophiles.
+
+
+### Prédictions
+
+```{r results=FALSE}
+# constant 
+p_res1<-backTransform(res1, type="det")
+p_res1 
+IC_p_res1<-plogis(confint(res1, type='det'))
+
+psi_res1<-backTransform(res1, type="state")
+psi_res1 
+IC_psi_res1<-plogis(confint(res1, type='state'))
+IC_psi_res1
+
+psi_res9<-backTransform(res9, type="state")
+IC_psi_res9<-plogis(confint(res9, type='state'))
+
+
+```
+La probabilité d'occupation moyenne des tyrphophiles estimée par le modèle constant est psi = `r psi_res1@estimate` [IC95% `r IC_psi_res1[1]`-`r IC_psi_res1[2]`]. La probabilité de détection des tyrphophiles estimée par le modèle constant est p = `r p_res1@estimate` [IC95% `r IC_p_res1[1]`-`r IC_p_res1[2]`].
+
+__Meilleur modèle__
+La probabilité de détection des tyrphopiles est plus élevée sur Machais, puis TGF, elle augmente lorsqu'il y a présence d'eau sur les placettes, elles est faible lors de la période 1.   
+
+
+```{r results=FALSE, fig.width=6, fig.height=5}
+
+
+newData <- data.frame(periode = c(1,2,3),
+                      site = c(rep('TDC',3), rep('TGF',3), rep('RNM',3)),
+                      eau = c(rep('0',9), rep('1', 9)))
+
+res21_pred <- predict(res21, type = "det", newdata = newData, appendData = TRUE)
+
+res21_pred %>%
+  as.data.frame() %>%
+  ggplot() +
+  facet_grid(eau ~ site) +
+  theme_bw() +
+  geom_errorbar(aes(x=periode, y=Predicted, ymin=lower, ymax=upper), width=.1,
+              position=position_dodge(.9)) +
+  geom_bar(aes(x=periode, y=Predicted), stat="identity", fill="forestgreen", alpha=.5, width=.5) +
+  theme(axis.title.x = element_text(size = 13),
+        axis.title.y = element_text(size = 13),
+        axis.text.x = element_text(size=12), 
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(colour="black", size=11),
+        legend.text = element_text(size=10)) +
+  xlab("période") +
+  ylab("probabilité de détection (p)")  
+```
+
+```{r results=FALSE, fig.width=6, fig.height=5}
+
+newData <- data.frame(max_prof = seq(from=min(max_prof$max_prof), to=max(max_prof$max_prof)))
+res21_pred_psi <- predict(res21, type = "state", newdata = newData, appendData = TRUE)
+
+res21_pred_psi %>%
+  as.data.frame() %>%
+  ggplot() +
+  theme_bw() +
+  geom_ribbon(aes(x=max_prof, ymin=lower, ymax=upper), fill= "forestgreen", alpha=0.4) +
+  geom_line(aes(x=max_prof, y=Predicted), fill="forestgreen", alpha=.5, width=.5) +
+  theme(axis.title.x = element_text(size = 13),
+        axis.title.y = element_text(size = 13),
+        axis.text.x = element_text(size=12), 
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(colour="black", size=11),
+        legend.text = element_text(size=10)) +
+  geom_rug(data = data_total, aes(x=profondeur_lin), col="black",alpha=0.01, size=5) +
+  xlab("profondeur maximale") +
+  ylab("probabilité d'occupation (psi)") 
+```
+
+## Généralistes 
+
+### Sélection de modèles
+```{r results=FALSE}
+# sélection de modèles
+
+## detection
+res1<-occu(~1 ~1, data=umf_generalistes)
+res2<-occu(~periode ~1, data=umf_generalistes) #
+res3<-occu(~as.factor(periode) ~1, data=umf_generalistes) 
+res4<-occu(~eau ~1, data=umf_generalistes) #
+res5<-occu(~site ~1, data=umf_generalistes) #
+res6<-occu(~habitat ~1, data=umf_generalistes) 
+res7<-occu(~helo ~1, data=umf_generalistes)
+res8<-occu(~prof ~1, data=umf_generalistes) #
+
+res9<-occu(~periode + eau ~1, data=umf_generalistes) 
+res10<-occu(~periode + site ~1, data=umf_generalistes)
+res11<-occu(~periode + prof ~1, data=umf_generalistes)
+res12<-occu(~eau+site ~1, data=umf_generalistes) 
+res13<-occu(~site+prof ~1, data=umf_generalistes)
+
+res14<-occu(~periode + eau + site ~1, data=umf_generalistes) 
+
+
+ 
+# occupation (avec meilleur modèle détection) 
+
+res15<-occu(~periode + eau + site ~ habitat, data=umf_generalistes) # 
+res16<-occu(~periode + eau + site ~ site, data=umf_generalistes) 
+res17<-occu(~periode + eau + site ~ scale(max_prof), data=umf_generalistes) #
+res18<-occu(~periode + eau + site ~ presabs_eau, data=umf_generalistes)
+res19<-occu(~periode + eau + site ~ habitat+scale(max_prof), data=umf_generalistes) 
+
+# d'autres essais
+res20<-occu(~periode + eau ~ habitat+scale(max_prof), data=umf_generalistes) # BEST
+res21<-occu(~periode + eau ~ habitat+scale(max_prof) + site, data=umf_generalistes) 
+res22<-occu(~periode + eau ~ scale(max_prof), data=umf_generalistes) 
+res23<-occu(~periode + eau ~ habitat, data=umf_generalistes) 
+res24<-occu(~periode ~ habitat+scale(max_prof), data=umf_generalistes) 
+res25<-occu(~ eau ~ habitat+scale(max_prof), data=umf_generalistes) 
+
+
+mods_occu <- fitList('p(.) psi(.)'=res1, 
+                     'p(periode) psi(.)'=res2, 
+                     'p(periode_cat) psi(.)'=res3, 
+                     'p(eau) psi(.)'=res4,
+                     'p(site) psi(.)'=res5,
+                     'p(habitat) psi(.)'=res6,
+                     'p(helophytes) psi(.)'=res7,
+                     'p(profondeur) psi(.)'=res8,
+                     'p(periode+eau) psi(.)'=res9,
+                     'p(periode+site) psi(.)'=res10,
+                     'p(periode+profondeur) psi(.)'=res11,
+                     'p(eau+site) psi(.)'=res12,
+                     'p(site+profondeur) psi(.)'=res13,
+                     'p(periode+eau+site) psi(.)'=res14,
+                     'p(periode+eau+site) psi(habitat)'=res15,
+                     'p(periode+eau+site) psi(site)'=res16,
+                     'p(periode+eau+site) psi(profondeur_max)'=res17,
+                     'p(periode+eau+site) psi(eau)'=res18,
+                     'p(periode+eau+site) psi(profondeur_max+habitat)'=res19,
+                     'p(periode+eau) psi(habitat+profondeur_max)'=res20,
+                     'p(periode+eau) psi(habitat+profondeur_max+site)'=res21,
+                     'p(periode+eau) psi(profondeur_max)'=res22,
+                     'p(periode+eau) psi(habitat)'=res23,
+                     'p(periode) psi(habitat+profondeur_max)'=res24,
+                     'p(eau) psi(habitat+profondeur_max)'=res25)
+
+
+table_AIC_occu<-modSel(mods_occu)
+table_AIC_occu<-as(table_AIC_occu, "data.frame")
+
+
+table_AIC_occu %>%
+  select(model, n, nPars, AIC, delta, AICwt) -> table_AIC_occu
+
+
+# write.csv2(table_AIC_occu, "table_AIC_occu_generalistes.csv")
+
+```
+
+```{r}
+table_AIC_occu 
+```
+
+Le modèle retenu intègre les effets additifs de la présence d'eau et de la période sur la probabilité de détection, ainsi que des effets de l'habitat et de la profondeur maximale en eau sur l'occupation des libellules généralistes. 
+
+### Prédictions
+```{r results=FALSE}
+# constant 
+p_res1<-backTransform(res1, type="det")
+p_res1 
+IC_p_res1<-plogis(confint(res1, type='det'))
+
+psi_res1<-backTransform(res1, type="state")
+psi_res1 
+IC_psi_res1<-plogis(confint(res1, type='state'))
+IC_psi_res1
+```
+La probabilité d'occupation moyenne des généralistes estimée par le modèle constant est psi = `r psi_res1@estimate` [IC95% `r IC_psi_res1[1]`-`r IC_psi_res1[2]`]. La probabilité de détection des généralistes estimée par le modèle constant est p = `r p_res1@estimate` [IC95% `r IC_p_res1[1]`-`r IC_p_res1[2]`].
+
+__Meilleur modèle__  
+Les prédictions du meilleur modèle mettent en évidence une augmentation de la probabilité de détection des libellules généralistes avec la présence d'eau, et une diminution linéaire de leur probabilité de détection avec l'avancée de la saison. Ce modèle met également en évidence une augmentation de la probabilité d'occupation avec la profondeur maximale d'eau (lors de la session avec le niveau d'eau maximal parmi les trois sessions). On n'observe pas de différence entre les habitats d'eau libre et mares végétalisées. La probabilité d'occupation est nulle sur les habitats de tourbières trembantes (aucune exuvie détectée). Elle est mal estimée pour les tourbières errodées (trop peu de détections ?).  
+
+
+
+```{r results=FALSE, fig.width=6, fig.height=4}
+
+newData <- data.frame(periode = c(1,2,3),
+                      eau=c(0,0,0, 1,1,1))
+res20_pred <- predict(res20, type = "det", newdata = newData, appendData = TRUE)
+
+res20_pred %>%
+  as.data.frame() %>%
+  ggplot() +
+  facet_wrap(~eau) +
+  theme_bw() +
+  geom_ribbon(aes(x=periode, ymin=lower, ymax=upper), fill= "forestgreen", alpha=0.4) +
+  geom_line(aes(x=periode, y=Predicted), fill="forestgreen", alpha=.5, width=.5) +
+  theme(axis.title.x = element_text(size = 13),
+        axis.title.y = element_text(size = 13),
+        axis.text.x = element_text(size=12), 
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(colour="black", size=11),
+        legend.text = element_text(size=10)) +
+  xlab("période") +
+  ylab("probabilité de détection (p)") 
+```
+
+
+```{r results=FALSE, fig.width=6, fig.height=7}
+# habitat
+
+newData <- data.frame(max_prof = rep(seq(from=min(max_prof$max_prof), to=max(max_prof$max_prof), by=1), 4),
+                      habitat = c(rep('eau_libre_gr',106), rep('mare_vegetalisee_gr',106), rep('tourbiere_erodee',106), rep('tourbiere_tremblante_gr',106)))
+res20_pred_habitat <- predict(res20, type = "state", newdata = newData, appendData = TRUE)
+
+res20_pred_habitat %>%
+  as.data.frame() %>%
+  ggplot() +
+  facet_wrap(~habitat) +
+  theme_bw() +
+  geom_ribbon(aes(x=max_prof, ymin=lower, ymax=upper), fill= "forestgreen", alpha=0.4) +
+  geom_line(aes(x=max_prof, y=Predicted), fill="forestgreen", alpha=.5, width=.5) +
+  theme(axis.title.x = element_text(size = 11),
+        axis.title.y = element_text(size = 11),
+        axis.text.x = element_text(size=11, angle=90), 
+        axis.text.y = element_text(size = 11),
+        legend.title = element_text(colour="black", size=11),
+        legend.text = element_text(size=10)) +
+  geom_rug(data = max_prof, aes(x=max_prof), col="black",alpha=0.02, size=5) +
+  xlab("profondeur d'eau maximale") +
+  ylab("probabilité d'occupation (psi)")  
+```
+
+
+

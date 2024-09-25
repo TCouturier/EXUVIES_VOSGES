@@ -1,0 +1,241 @@
+﻿Site;Date;No_passage;Nb_observateurs;obs1;obs2;obs3;obs4;Placette;Habitat_predominant;Remarques_habitats;Eau_libre;Helophytes;profondeur_max;nb_exuvies_anisopteres;nb_exuvies_autres;heure_depart;duree_prospection;Remarque
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;13;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;14;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;16;tourbiere_erodee;;0;0;0;0;0;11:02;11:10;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;17;tourbiere_erodee;;0;1;0;0;0;16:56;17:04;temps total passé sur la placette
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;19;tourbiere_erodee;;0;0;0;0;0;11:37;11:47;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;30;tourbiere_tremblante_gr;;0;1;0;0;0;15:11;15:24;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;31;tourbiere_tremblante_gr;;0;1;0;0;0;14:54;15:08;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;32;tourbiere_tremblante_gr;;1;1;1_10;0;0;14:40;14:53;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;34;tourbiere_tremblante_gr;;0;0;0;0;0;09:41;09:55;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;36;tourbiere_tremblante_gr;;1;1;>100;0;0;NA;NA;
+TDM;17/06/2022;1;1;Agathe Gerard;;;;37;tourbiere_tremblante_gr;;0;1;0;0;0;16:23;16:30;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;38;tourbiere_tremblante_gr;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;43;mare_vegetalisee_gr;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;57;mare_vegetalisee_gr;;1;1;21_30;0;0;17:06;17:16;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;58;mare_vegetalisee_gr;;1;1;1_10;0;0;09:30;09:39;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;60;tourbiere_tremblante_gr;;0;0;0;0;0;12:02;12:17;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;64;tourbiere_tremblante_gr;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;67;tourbiere_tremblante_gr;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;70;tourbiere_tremblante_gr;;0;0;0;0;0;09:52;10:00;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;71;tourbiere_erodee;;1;1;>100;0;0;10:55;11:10;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;74;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;75;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;77;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;1;Alix Greuzat_Badre;;;;78;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;79;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;80;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;0A;eau_libre_gr;;1;1;>100;0;0;15:30;15:40;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;0B;eau_libre_gr;;1;1;>100;0;0;15:26;15:41;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;10B;tourbiere_erodee;;0;0;0;0;0;10:00;10:09;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;11B;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;17/06/2022;1;1;Alix Greuzat_Badre;;;;1A;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;17/06/2022;1;1;Sebastien Sinoquet;;;;2A;eau_libre_gr;;1;1;>100;0;0;14:30;14:45;temps total passé sur la placette
+TDM;17/06/2022;1;1;Alix Greuzat_Badre;;;;2B;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;4B;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;17/06/2022;1;1;Agathe Gerard;;;;5A;eau_libre_gr;;1;1;>100;0;0;11:13;11:27;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;7B;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;12;tourbiere_erodee;;0;1;0;0;0;15:06;15:19;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;13;tourbiere_erodee;;0;1;0;0;0;10:18;10:26;temps total passé sur la placette
+TDM;19/07/2022;2;1;Alix Greuzat_Badre;;;;15;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;16;tourbiere_erodee;;0;1;0;0;0;12:41;12:53;temps total passé sur la placette
+TDM;19/07/2022;2;2;Geoffrey Klein;Ael Lorenzi;;;17;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;19;tourbiere_erodee;;0;1;0;0;0;14:49;15:04;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;30;tourbiere_tremblante_gr;;0;1;0;0;0;10:27;10:35;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;31;tourbiere_tremblante_gr;;0;1;0;0;0;10:37;10:44;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;32;tourbiere_tremblante_gr;;1;1;1_10;0;0;10:47;11:00;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;33;tourbiere_tremblante_gr;;1;1;1_10;0;0;11:39;11:50;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;34;tourbiere_tremblante_gr;;0;1;0;0;0;12:01;12:10;temps total passé sur la placette
+TDM;19/07/2022;2;1;Geoffrey Klein;;;;37;tourbiere_tremblante_gr;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;1;Geoffrey Klein;;;;38;tourbiere_tremblante_gr;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;41;mare_vegetalisee_gr;;0;0;0;0;0;NA;NA;
+TDM;19/07/2022;2;1;Ael Lorenzi;;;;43;mare_vegetalisee_gr;;0;1;0;0;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;53;mare_vegetalisee_gr;;1;1;61_70;0;0;11:05;11:21;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;54;mare_vegetalisee_gr;;1;1;>100;0;0;10:21;10:37;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;58;mare_vegetalisee_gr;;0;1;0;0;0;10:07;10:20;temps total passé sur la placette
+TDM;19/07/2022;2;2;Geoffrey Klein;Ael Lorenzi;;;59;mare_vegetalisee_gr;;1;1;>100;0;0;NA;NA;
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;60;tourbiere_tremblante_gr;;0;1;0;0;0;11:31;11:39;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;62;tourbiere_tremblante_gr;;0;1;0;0;0;11:53;12:00;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;63;tourbiere_tremblante_gr;;0;1;0;0;0;13:42;13:55;temps total passé sur la placette
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Geoffrey Klein;;;64;tourbiere_tremblante_gr;;0;1;0;0;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;66;tourbiere_tremblante_gr;;0;1;0;0;0;12:26;12:40;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;67;tourbiere_tremblante_gr;;0;1;0;0;0;10:05;10:17;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;69;tourbiere_tremblante_gr;;0;1;0;0;0;13:27;13:41;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;70;tourbiere_tremblante_gr;;0;1;0;0;0;10:39;10:50;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;71;tourbiere_erodee;;1;1;1_10;0;0;12:14;12:24;temps total passé sur la placette
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;72;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Geoffrey Klein;;;73;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;74;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Geoffrey Klein;;;75;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;76;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;77;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;19/07/2022;2;1;Geoffrey Klein;;;;78;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;79;tourbiere_erodee;;0;1;0;0;0;15:50;15:59;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;80;tourbiere_erodee;;0;1;0;0;0;15:30;15:48;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;0A;eau_libre_gr;;1;1;>100;0;0;14:08;14:17;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;0B;eau_libre_gr;;1;1;>100;0;0;13:58;14:07;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;10B;tourbiere_erodee;;0;1;0;0;0;10:51;11:04;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;1A;eau_libre_gr;;1;1;>100;0;0;14:18;14:28;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;2B;eau_libre_gr;;1;1;>100;0;0;14:42;14:51;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;3B;eau_libre_gr;;1;1;>100;0;0;13:40;13:51;temps total passé sur la placette
+TDM;19/07/2022;2;1;Alix Greuzat_Badre;;;;4A;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;19/07/2022;2;2;Geoffrey Klein;Ael Lorenzi;;;4B;eau_libre_gr;;1;1;>100;0;1;NA;NA;
+TDM;19/07/2022;2;1;Alix Greuzat_Badre;;;;5A;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;6A;eau_libre_gr;;1;1;>100;0;0;15:05;15:15;temps total passé sur la placette
+TDM;19/07/2022;2;1;Geoffrey Klein;;;;6B;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;7A;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;19/07/2022;2;1;Alix Greuzat_Badre;;;;7B;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;08/08/2022;3;1;Charles Jud;;;;8;eau_libre_gr;;1;1;>100;0;0;11:50;12:02;temps total passé sur la placette
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;9;eau_libre_gr;;1;1;71_80;0;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;11;eau_libre_gr;;1;1;71_80;0;0;09:20;09:25;temps de recherche + récolte
+TDM;09/08/2022;3;1;Emmanuelle Hans;;;;12;tourbiere_erodee;;0;1;0;0;0;10:50;11:00;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;13;tourbiere_erodee;;0;1;0;0;0;10:09;10:14;temps de recherche + récolte
+TDM;08/08/2022;3;1;Charles Jud;;;;14;tourbiere_erodee;;0;1;0;0;0;11:20;11:33;temps total passé sur la placette
+TDM;09/08/2022;3;1;Emmanuelle Hans;;;;16;tourbiere_erodee;;0;1;0;0;0;10:15;10:25;temps de recherche + récolte
+TDM;08/08/2022;3;2;Charles Jud;Mayli;;;17;tourbiere_erodee;;0;1;0;0;0;14:56;15:05;temps total passé sur la placette
+TDM;09/08/2022;3;1;Emmanuelle Hans;;;;19;tourbiere_erodee;;0;1;0;0;0;10:30;10:40;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;30;tourbiere_tremblante_gr;;0;1;0;0;0;09:49;09:55;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;31;tourbiere_tremblante_gr;;0;1;0;0;0;09:40;09:45;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;32;tourbiere_tremblante_gr;;0;1;0;0;0;09:28;09:33;temps de recherche + récolte
+TDM;08/08/2022;3;1;Charles Jud;;;;33;tourbiere_tremblante_gr;;1;1;1_10;0;0;09:45;09:58;temps total passé sur la placette
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;34;tourbiere_tremblante_gr;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;36;tourbiere_tremblante_gr;;1;1;1_10;0;0;NA;NA;
+TDM;08/08/2022;3;2;Charles Jud;Mayli;;;37;tourbiere_tremblante_gr;;0;0;0;0;0;14:34;14:42;temps total passé sur la placette
+TDM;08/08/2022;3;2;Charles Jud;Mayli;;;37;tourbiere_tremblante_gr;;0;0;0;0;0;15:06;15:15;temps total passé sur la placette
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;38;tourbiere_tremblante_gr;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;1;Charles Jud;;;;43;tourbiere_erodee;;0;1;0;0;0;11:08;11:19;temps total passé sur la placette
+TDM;08/08/2022;3;1;Agathe Gerard;;;;45;mare_vegetalisee_gr;;1;1;31_40;0;0;11:09;11:20;temps de recherche + récolte
+TDM;08/08/2022;3;1;Charles Jud;;;;47;tourbiere_erodee;;1;1;21_30;0;0;11:36;11:40;temps total passé sur la placette
+TDM;09/08/2022;3;1;Emmanuelle Hans;;;;48;mare_vegetalisee_gr;;0;1;0;0;0;11:05;11:15;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;51;mare_vegetalisee_gr;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;52;mare_vegetalisee_gr;;1;1;61_70;0;0;NA;NA;
+TDM;08/08/2022;3;1;Agathe Gerard;;;;58;mare_vegetalisee_gr;;0;1;0;0;0;15:21;15:32;temps de recherche + récolte
+TDM;08/08/2022;3;1;Agathe Gerard;;;;59;mare_vegetalisee_gr;;1;1;71_80;0;0;15:38;15:49;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;60;tourbiere_tremblante_gr;;0;1;0;0;0;NA;NA;
+TDM;08/08/2022;3;1;Agathe Gerard;;;;61;tourbiere_tremblante_gr;;1;1;11_20;0;0;10:52;11:03;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;62;tourbiere_tremblante_gr;;0;1;0;0;0;NA;NA;
+TDM;08/08/2022;3;1;Agathe Gerard;;;;63;tourbiere_tremblante_gr;;0;0;0;0;0;10:36;10:47;temps de recherche + récolte
+TDM;09/08/2022;3;1;Alix Greuzat_Badre;;;;66;tourbiere_tremblante_gr;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;67;tourbiere_tremblante_gr;;0;1;0;0;0;10:00;10:05;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;68;tourbiere_tremblante_gr;;0;1;0;0;0;NA;NA;
+TDM;08/08/2022;3;1;Agathe Gerard;;;;69;tourbiere_tremblante_gr;;0;0;0;0;0;10:21;10:31;temps de recherche + récolte
+TDM;08/08/2022;3;1;Agathe Gerard;;;;70;tourbiere_tremblante_gr;;0;0;0;0;0;14:52;15:02;temps de recherche + récolte
+TDM;08/08/2022;3;1;Charles Jud;;;;71;tourbiere_erodee;;0;1;0;0;0;10:22;10:33;temps total passé sur la placette
+TDM;08/08/2022;3;1;Charles Jud;;;;72;tourbiere_erodee;;0;1;0;0;0;10:55;11:07;temps total passé sur la placette
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;73;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;74;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;75;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;76;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Charles Jud;Mayli;;;77;tourbiere_erodee;;0;0;0;0;0;14:24;14:32;temps total passé sur la placette
+TDM;08/08/2022;3;2;Charles Jud;Mayli;;;78;tourbiere_erodee;;0;1;0;0;0;14:46;14:53;temps total passé sur la placette
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;79;tourbiere_erodee;;0;0;0;0;0;12:05;12:10;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;80;tourbiere_erodee;;0;0;0;0;0;11:54;12:00;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;0B;eau_libre_gr;;1;1;>100;0;0;10:22;10:27;temps de recherche + récolte
+TDM;08/08/2022;3;1;Agathe Gerard;;;;10B;tourbiere_erodee;;0;0;0;0;0;14:39;14:50;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;11B;tourbiere_erodee;;0;0;0;0;0;NA;NA;
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;1A;eau_libre_gr;;1;1;>100;0;0;10:43;10:50;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;1B;eau_libre_gr;;1;1;>100;0;0;10:54;11:01;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;2A;eau_libre_gr;;1;1;>100;0;0;11:17;11:23;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;2B;eau_libre_gr;;1;1;>100;0;0;11:06;11:12;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;3A;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;3B;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;08/08/2022;3;1;Charles Jud;;;;5A;eau_libre_gr;;1;1;>100;0;0;10:05;10:17;temps total passé sur la placette
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;6A;eau_libre_gr;;1;1;>100;0;0;11:27;11:34;temps de recherche + récolte
+TDM;08/08/2022;3;2;Charles Jud;Mayli;;;6B;eau_libre_gr;;1;1;>100;0;1;14:08;14:18;temps total passé sur la placette
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;7B;eau_libre_gr;;1;1;>100;0;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;8;eau_libre_gr;;1;1;>100;1;0;NA;NA;
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;15;tourbiere_erodee;;0;1;0;1;0;17:16;17:24;temps total passé sur la placette
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;18;tourbiere_erodee;;1;1;>100;1;0;10:37;10:48;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;33;tourbiere_tremblante_gr;;1;1;1_10;1;0;11:46;12:01;temps total passé sur la placette
+TDM;18/06/2022;1;1;Agathe Gerard;;;;42;mare_vegetalisee_gr;;1;1;71_80;1;0;12:20;12:37;temps total passé sur la placette
+TDM;18/06/2022;1;1;Agathe Gerard;;;;44;mare_vegetalisee_gr;;1;1;71_80;1;0;12:37;12:52;temps total passé sur la placette
+TDM;18/06/2022;1;1;Alix Greuzat_Badre;;;;45;mare_vegetalisee_gr;;1;1;81_90;1;0;NA;NA;
+TDM;18/06/2022;1;1;Alix Greuzat_Badre;;;;48;mare_vegetalisee_gr;;1;1;81_90;1;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;52;mare_vegetalisee_gr;;1;1;71_80;1;0;NA;NA;
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;53;mare_vegetalisee_gr;;1;1;71_80;1;0;10:10;10:18;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;56;mare_vegetalisee_gr;;1;1;91_100;1;0;10:20;10:28;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;59;mare_vegetalisee_gr;;1;1;81_90;1;0;09:18;09:28;temps total passé sur la placette
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;61;tourbiere_tremblante_gr;;1;1;1_10;1;0;12:00;12:09;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;62;tourbiere_tremblante_gr;;0;1;0;1;0;12:19;12:33;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;65;tourbiere_tremblante_gr;;1;1;1_10;1;0;16:47;16:53;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;73;tourbiere_erodee;;0;1;0;1;0;09:57;10:11;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;76;tourbiere_erodee;;0;0;0;1;0;NA;NA;
+TDM;17/06/2022;1;1;Sebastien Sinoquet;;;;1B;eau_libre_gr;;1;1;>100;1;0;14:48;15:09;temps total passé sur la placette
+TDM;17/06/2022;1;1;Sebastien Sinoquet;;;;6B;eau_libre_gr;;1;1;>100;1;0;13:45;14:00;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;7A;eau_libre_gr;;1;1;>100;1;0;NA;NA;
+TDM;19/07/2022;2;2;Geoffrey Klein;Ael Lorenzi;;;8;eau_libre_gr;;1;1;>100;1;2;NA;NA;
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;10;eau_libre_gr;;1;1;>100;1;0;11:20;11:30;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;11;eau_libre_gr;;1;1;71_80;1;0;11:04;11:19;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;35;tourbiere_tremblante_gr;;1;1;11_20;1;0;15:15;15:27;temps total passé sur la placette
+TDM;19/07/2022;2;1;Alix Greuzat_Badre;;;;36;tourbiere_tremblante_gr;;1;1;>100;1;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;42;mare_vegetalisee_gr;;1;1;11_20;1;0;16:47;17:00;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;48;mare_vegetalisee_gr;;0;1;0;1;0;16:14;16:29;temps total passé sur la placette
+TDM;19/07/2022;2;1;Ael Lorenzi;;;;52;mare_vegetalisee_gr;;1;1;71_80;1;0;NA;NA;
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;55;mare_vegetalisee_gr;;1;1;21_30;1;0;16:05;16:16;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;56;mare_vegetalisee_gr;;1;1;81_90;1;0;11:23;11:39;temps total passé sur la placette
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;68;tourbiere_tremblante_gr;;0;1;0;1;0;NA;NA;
+TDM;19/07/2022;2;1;Geoffrey Klein;;;;11B;tourbiere_erodee;;0;1;0;0;0;NA;NA;
+TDM;08/08/2022;3;1;Charles Jud;;;;10;eau_libre_gr;;1;1;;1;0;09:22;09:50;Profondeur de l'eau : + de 30 cm / temps total passé sur la placette
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;15;tourbiere_erodee;;0;0;0;1;0;NA;NA;
+TDM;08/08/2022;3;1;Agathe Gerard;;;;18;tourbiere_erodee;;1;1;91_100;1;0;10:05;10:17;temps de recherche + récolte
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;35;tourbiere_tremblante_gr;;1;1;1_10;1;0;11:37;11:44;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;40;mare_vegetalisee_gr;;1;1;1_10;1;0;NA;NA;
+TDM;09/08/2022;3;2;Alix Greuzat_Badre;Emmanuelle Hans;;;49;mare_vegetalisee_gr;;1;1;1_10;1;0;10:31;10:46;temps de recherche + récolte
+TDM;08/08/2022;3;1;Agathe Gerard;;;;54;mare_vegetalisee_gr;;1;1;>100;1;0;15:06;15:17;temps de recherche + récolte
+TDM;08/08/2022;3;2;Charles Jud;Mayli;;;55;tourbiere_tremblante_gr;;1;1;;1;0;15:22;15:31;Profondeur de l'eau : + de 40 cm  / temps total passé sur la placette
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;57;mare_vegetalisee_gr;;1;1;31_40;1;0;10:01;10:07;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Clemence Lefebvre;;;64;tourbiere_tremblante_gr;;0;0;0;1;0;NA;NA;
+TDM;08/08/2022;3;2;Agathe Gerard;Clémence Lefebvre;;;0A;eau_libre_gr;;1;1;>100;1;0;10:29;10:36;temps de recherche + récolte
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;4A;eau_libre_gr;;1;1;>100;1;0;NA;NA;
+TDM;08/08/2022;3;2;Alix Greuzat_Badre;Mayli;;;4B;eau_libre_gr;;1;1;>100;1;1;NA;NA;
+TDM;08/08/2022;3;1;Charles Jud;;;;5B;eau_libre_gr;;1;1;>100;1;0;10:38;10:49;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;9;mare_vegetalisee_gr;;1;1;91_100;2;0;09:45;09:55;temps total passé sur la placette
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;12;tourbiere_erodee;;0;0;0;2;0;12:10;12:17;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;51;mare_vegetalisee_gr;;1;1;11_20;2;0;08:54;09:03;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;54;mare_vegetalisee_gr;;1;1;>100;2;0;09:40;09:50;temps total passé sur la placette
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;63;tourbiere_tremblante_gr;;0;0;0;2;0;11:28;11:36;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;68;tourbiere_tremblante_gr;;0;0;0;2;0;NA;NA;
+TDM;17/06/2022;1;1;Agathe Gerard;;;;3B;eau_libre_gr;;1;1;>100;2;0;14:21;14:36;temps total passé sur la placette
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;4A;eau_libre_gr;;1;1;>100;2;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;6A;eau_libre_gr;;1;1;>100;2;0;NA;NA;
+TDM;19/07/2022;2;1;Geoffrey Klein;;;;47;mare_vegetalisee_gr;;1;1;21_30;2;0;NA;NA;
+TDM;19/07/2022;2;2;Alix Greuzat_Badre;Ael Lorenzi;;;65;tourbiere_tremblante_gr;;1;1;1_10;2;0;NA;NA;
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;1B;eau_libre_gr;;1;1;>100;2;0;14:28;14:40;temps total passé sur la placette
+TDM;19/07/2022;2;2;Geoffrey Klein;Ael Lorenzi;;;5B;eau_libre_gr;;1;1;>100;2;0;14:07;14:12;temps total passé sur la placette
+TDM;08/08/2022;3;1;Agathe Gerard;;;;53;mare_vegetalisee_gr;;1;1;61_70;2;0;14:24;14:35;temps de recherche + récolte
+TDM;08/08/2022;3;1;Charles Jud;;;;7A;eau_libre_gr;;1;1;>100;2;0;12:04;12:16;temps total passé sur la placette
+TDM;18/06/2022;1;1;Agathe Gerard;;;;41;mare_vegetalisee_gr;;1;1;71_80;3;0;12:53;13:09;temps total passé sur la placette
+TDM;18/06/2022;1;1;Alix Greuzat_Badre;;;;46;mare_vegetalisee_gr;;1;1;81_90;3;0;NA;NA;
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;66;tourbiere_tremblante_gr;;0;0;0;3;0;11:10;11:17;temps total passé sur la placette
+TDM;19/07/2022;2;3;Alix Greuzat_Badre;Ael Lorenzi;Geoffrey Klein;;40;mare_vegetalisee_gr;;1;1;1_10;3;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;49;mare_vegetalisee_gr;;1;1;1_10;3;0;12:04;12:23;temps total passé sur la placette
+TDM;19/07/2022;2;2;Agathe Gerard;Mathieu Gilleron;;;2A;eau_libre_gr;;1;1;>100;3;0;14:52;15:01;temps total passé sur la placette
+TDM;08/08/2022;3;1;Agathe Gerard;;;;56;mare_vegetalisee_gr;;1;1;81_90;3;0;14:09;14:20;temps de recherche + récolte
+TDM;17/06/2022;1;1;Agathe Gerard;;;;72;tourbiere_erodee;;1;1;1_10;4;0;10:12;10:32;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;3A;eau_libre_gr;;1;1;>100;4;0;11:28;11:45;temps total passé sur la placette
+TDM;19/07/2022;2;1;Ael Lorenzi;;;;9;eau_libre_gr;;1;1;71_80;4;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;18;tourbiere_erodee;;1;1;>100;4;0;11:46;12:03;temps total passé sur la placette
+TDM;19/07/2022;2;2;Geoffrey Klein;Ael Lorenzi;;;3A;eau_libre_gr;;1;1;>100;4;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;35;tourbiere_tremblante_gr;;1;1;1_10;5;0;NA;NA;
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;49;mare_vegetalisee_gr;;1;1;1_10;5;0;10:52;11:01;temps total passé sur la placette
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;50;mare_vegetalisee_gr;;1;1;1_10;5;0;11:48;11:58;temps total passé sur la placette
+TDM;18/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;69;tourbiere_tremblante_gr;;0;0;0;5;0;11:17;11:27;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;44;mare_vegetalisee_gr;;1;1;21_30;5;0;16:30;16:46;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;40;mare_vegetalisee_gr;;1;1;11_20;6;0;16:05;16:20;temps total passé sur la placette
+TDM;17/06/2022;1;2;Agathe Gerard;Alix Greuzat_Badre;;;55;mare_vegetalisee_gr;;1;1;61_70;6;0;09:07;09:15;temps total passé sur la placette
+TDM;19/07/2022;2;1;Alix Greuzat_Badre;;;;57;mare_vegetalisee_gr;;1;1;51_60;6;0;NA;NA;
+TDM;09/08/2022;3;1;Alix Greuzat_Badre;;;;46;mare_vegetalisee_gr;;1;1;11_20;6;0;NA;NA;
+TDM;09/08/2022;3;1;Alix Greuzat_Badre;;;;50;mare_vegetalisee_gr;;0;1;0;6;0;10:59;11:16;temps de recherche + récolte
+TDM;17/06/2022;1;1;Agathe Gerard;;;;5B;eau_libre_gr;;1;1;>100;7;0;10:34;10:50;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;10;eau_libre_gr;;1;1;71_80;8;0;13:48;14:03;temps total passé sur la placette
+TDM;17/06/2022;1;1;Agathe Gerard;;;;11;eau_libre_gr;;1;1;51_60;9;0;14:04;14:19;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;41;mare_vegetalisee_gr;;1;1;61_70;9;0;17:01;17:15;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;61;tourbiere_tremblante_gr;;1;1;1_10;9;0;13:56;14:08;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;45;mare_vegetalisee_gr;;1;1;21_30;11;0;15:50;16:13;temps total passé sur la placette
+TDM;19/07/2022;2;2;Geoffrey Klein;Ael Lorenzi;;;51;mare_vegetalisee_gr;;1;1;1_10;12;0;NA;NA;
+TDM;17/06/2022;1;2;Alix Greuzat_Badre;Sebastien Sinoquet;;;47;mare_vegetalisee_gr;;1;1;51_60;14;0;NA;NA;
+TDM;20/07/2022;2;1;Agathe Gerard;;;;50;mare_vegetalisee_gr;;1;1;1_10;23;0;14:14;14:46;temps total passé sur la placette
+TDM;20/07/2022;2;1;Agathe Gerard;;;;46;mare_vegetalisee_gr;;1;1;71_80;25;0;15:20;15:50;temps total passé sur la placette
+TDM;08/08/2022;3;1;Agathe Gerard;;;;44;mare_vegetalisee_gr;;1;1;31_40;25;0;11:24;11:41;temps de recherche + récolte
+TDM;09/08/2022;3;1;Emmanuelle Hans;;;;42;mare_vegetalisee_gr;;1;1;1_10;27;2;11:20;11:47;27 exuvies en tout dont 3 envolées minimum / temps de recherche + récolte
+TDM;09/08/2022;3;1;Alix Greuzat_Badre;;;;41;mare_vegetalisee_gr;;1;1;21_30;29;4;11:22;11:37;temps de recherche + récolte

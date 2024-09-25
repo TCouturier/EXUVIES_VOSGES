@@ -1,0 +1,46 @@
+Métadonnées couches SIG
+
+
+Intitulé :Tab_Phytos_Machais_2017_18_V2.0
+
+Contenu : polygones de délimitation des habtiats tourbeux, issus de relevés terrain (2017 et 2018)
+et d'étude sur photographie aérienne
+
+Sources : IGN, google satellite; 
+
+Saisie effectuée par : Jean-Charles DOR, bureau d'études CLIMAX
+
+Support de saisie : plusieurs fonds photos, été et hiver, pour avoir le contraste des végétations entre saisons
+
+Qualité de la saisie : fine
+
+Echelle de saisie : 1/550e et 1/1000e
+
+Echelle minimum d'utilisation : 1/25 000e
+
+Echelle maximum d'utilisation : 1/ 550e
+
+Date de création/modification : fichier final 2018 V2.0
+
+Détail des champs : 
+Dénomination des habitats du polygone (« phyto_1 », « phyto_2 », « phyto_3 ») 
+Parts respectives des habitats au sein du polygone 
+Code et intitulé Corine Biotope (« corine_1 », « IntiCC_1 », idem pour les habitats 2 et 3) 
+Code et intitulé Natura 2000 (« N2000_1 », « IntiN_1 ») 
+Remarques (« Remarqs ») 
+Typicité floristique ("typi_flor’) 
+Atteintes :Texte libre qui nomme les atteintes observées.
+Etat de conservation ("Etat_cons") 
+Dynamique naturelle (« Dyn_Nat »)  
+Type d’observation (« Observ ») 
+
+Renvoi vers fiche ou notice méthodologique : oui, rapport complet "révision de la cartographie des habitats tourbeux" 
+VF juillet 2019
+
+Confidentialité : Non
+
+utilisation : OK
+
+-------------------
+Alix Greuzat, 24/02/20
+

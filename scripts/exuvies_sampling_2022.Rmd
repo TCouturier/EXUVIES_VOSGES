@@ -1,0 +1,487 @@
+---
+title: "Etude exuvies RN Vosges - Préparation plan d'échantillonnage état-zéro"
+author: "Thibaut Couturier"
+output:
+  html_document: null
+  toc: yes
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, options(digits=2))
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+#library(ggsn)
+library(lubridate)
+library(unmarked)
+
+```
+
+
+Analyse en date du 
+`r Sys.Date()`
+
+
+On importe les cartographies d'habitats utilisées lors de l'échantillonnage de l'étude-pilote. On y applique un nouveau regroupement, discuté entre les partenaires (Alix, Marjolaine et Thibault) le __18 mai 2022__.  
+
+
+```{r results = FALSE, message=FALSE, warning=FALSE}
+contour_RN <- sf::st_read(dsn = "../data", layer = "RNN_selectTC")
+
+# TGF 
+habitat_TGF <- sf::st_read(dsn = "../data", layer = "RNNTGF_CEFE_exporthabitatfavorable")
+
+A<-dim(habitat_TGF)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TGF %>%
+  cbind(ID_uniq) -> habitat_TGF
+
+habitat_TGF %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         CD_CORINE = as.factor(CD_CORINE),
+         LB_HABITAT = as.factor(LB_HABITAT),
+         habitat_groupe_2022=case_when(LB_HABITAT%in%c("Fosse d'extraction", "Mare d'eau libre")  ~ 'eau_libre_gr', 
+                               LB_HABITAT%in% c('mare à Sphagnum cuspidatum', 'Mare à Sphaignes vertes' ,'Mares à Sphaignes et Carex')  ~ 'mare_vegetalisee_gr'),
+         habitat_groupe_2022=as.factor(habitat_groupe_2022)) -> habitat_TGF
+
+
+# TDC 
+habitat_TDC <- sf::st_read(dsn = "../data", layer = "RNRTdC_CEFE_exporthabitatfavorable")
+
+A<-dim(habitat_TDC)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TDC %>%
+  cbind(ID_uniq) -> habitat_TDC
+
+habitat_TDC %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         CD_CORINE = as.factor(CD_CORINE),
+         LB_HABITAT = as.factor(LB_HABITAT),
+         habitat_groupe_2022=case_when(LB_HABITAT%in%'Eau libre'  ~ 'eau_libre_gr',
+                                LB_HABITAT%in%c('Mares à Sphagnum cuspidatum et Scheuchzérie','Mares à Sphaignes vertes')  ~ 'mare_vegetalisee_gr',
+                                LB_HABITAT%in%c('Groupements à Sphaignes rouges', "Tourbières tremblantes en cours d'ombrotrophisati*")  ~ 'tourbiere_tremblante_gr',
+                                LB_HABITAT%in%c('Groupements à Carex rostrata') ~ 'groupement_a_carex_rostrata'),
+         habitat_groupe_2022=as.factor(habitat_groupe_2022)) -> habitat_TDC
+
+# TDM
+habitat_TDM <- sf::st_read(dsn = "../data", layer = "cartographie_tourbieres_climax_2019")
+
+habitat_TDM %>%
+  mutate(area = st_area(.),
+         area = as.numeric(area),
+         corine_1 = as.factor(corine_1),
+         corine_new = case_when(corine_1 %in% c("22.1", "22.4311", "22.4314", "51.13", "53.14", "53.147") ~ "eau_libre",
+                                corine_1 %in% c("53.2141", "54.59", "54.53") ~ "tremblants",
+                                corine_1 %in% c("31.13 ; 51.2", "31.213", "51.2") ~ "veget_non_tourb",
+                                corine_1 %in% c("54.42", "54.6", "51.12, 54.6", "51.11") ~ "tourb_erodees",
+                                corine_1 %in% c("51.1111", "51.1134") ~ "tourb_hautes"),
+         corine_new = as.factor(corine_new),
+         habitat_groupe_2022=case_when(corine_new%in%c('eau_libre', 'mare_d_eau_libre', 'fosse_d_extraction')  ~ 'eau_libre_gr',
+                                corine_new%in%c('mare_a_scheuchzerie','mare_a_sphaigne_rouges','mare_a_sphaignes')  ~ 'mare_vegetalisee_gr', 
+                                corine_new%in%c('groupement_a_sphaignes_rouges','tourbiere_tremblante','tremblants')  ~ 'tourbiere_tremblante_gr',
+                                corine_new%in%'tourb_erodees'  ~ 'tourbiere_erodee',
+                                corine_new%in%'groupement_a_carex_rostrata'  ~ 'groupement_a_carex_rostrata'),
+         habitat_groupe_2022=as.factor(habitat_groupe_2022)) -> habitat_TDM
+
+
+A<-dim(habitat_TDM)
+ID_uniq<-vector(length=A[1])
+ID_uniq<-seq(from=1, to=A[1], by=1)
+habitat_TDM %>%
+  cbind(ID_uniq) -> habitat_TDM
+
+
+```
+
+On importe les tableaux de données collectées lors de l'étude-pilote. Parmi les modifications/transformations de ce jeu de données, on précise notamment le nouveau regroupement d'habitat proposé en mai 2022.     
+
+```{r results = FALSE, message=FALSE, warning=FALSE}
+data_RNM<-read_csv2('../data/donnees_odonates_RNM_CEFE_VF_070422+TC.csv')
+
+data_RNM %>%
+  select(-profondeur_eau_cm) %>%
+  mutate(site=as.factor(site),
+         secteur=as.factor(secteur),
+         date = dmy(date),
+         placette=as.factor(placette),
+         placette_site=str_c(site, placette, sep='_'),
+         habitat_predominant=as.factor(habitat_predominant),
+         pourcentage_habitat_predominant=as.character(pourcentage_habitat_predominant),
+         surface_eau_libre=as.factor(surface_eau_libre),
+         espece=as.factor(espece),
+         sexe=as.factor(sexe),
+         determinateur=as.factor(determinateur),
+         exuvies_sur_nenuphar=as.numeric(exuvies_sur_nenuphar),
+         temps_tot=temps_recolte_par_personne_min * nombre_observateurs) -> data_RNM_aniso
+```
+
+```{r results = FALSE, message=FALSE, warning=FALSE}
+data_TGF_TDC<-read_csv2('../data/donnees_TGF_TDC_brut_juin22+TC.csv')
+
+data_TGF_TDC %>%
+  mutate(site=as.factor(site),
+         secteur=as.factor(secteur),
+         date = dmy(date),
+         placette=as.factor(placette),
+         placette_site=str_c(site, placette,  sep = '_'),
+         habitat_predominant=as.factor(habitat_predominant),
+         pourcentage_habitat_predominant=as.character(pourcentage_habitat_predominant),
+         surface_eau_libre=as.factor(surface_eau_libre),
+         espece=as.factor(espece),
+         sexe=as.factor(sexe),
+         determinateur=as.factor(determinateur),
+         exuvies_sur_nenuphar=as.numeric(exuvies_sur_nenuphar),
+         temps_tot=temps_total_prospection_min) -> data_TGF_TDC
+
+
+data_TGF_TDC %>%
+  bind_rows(data_RNM_aniso) -> data_total
+
+data_total %>%
+  mutate(eau_libre=case_when(surface_eau_libre %in% '0' ~ 0,
+                             surface_eau_libre %in% '1_10' ~ 5,
+                             surface_eau_libre %in% '11_20' ~ 15,
+                             surface_eau_libre %in% '21_30' ~ 25,
+                             surface_eau_libre %in% '31_40' ~ 35,
+                             surface_eau_libre %in% '41_50' ~ 45,
+                             surface_eau_libre %in% '51_60' ~ 55,
+                             surface_eau_libre %in% '61_70' ~ 65,
+                             surface_eau_libre %in% '71_80' ~ 75,
+                             surface_eau_libre %in% '81_90' ~ 85,
+                             surface_eau_libre %in% '91_100' ~ 95,
+                             surface_eau_libre == 1 ~ 1,
+                             surface_eau_libre == 2 ~ 2,
+                             surface_eau_libre == 5 ~ 5,
+                             surface_eau_libre == 10 ~ 10,
+                             surface_eau_libre == 15 ~ 15,
+                             surface_eau_libre == 20 ~ 20,
+                             surface_eau_libre == 30 ~ 30,
+                             surface_eau_libre == 40 ~ 40,
+                             surface_eau_libre == 50 ~ 50,
+                             surface_eau_libre == 60 ~ 60,
+                             surface_eau_libre == 70 ~ 70,
+                             surface_eau_libre == 80 ~ 80,
+                             surface_eau_libre == 90 ~ 90,
+                             surface_eau_libre == 100 ~ 100),
+         groupe=case_when(espece %in% c('aeshna_subarctica_elisabethae', 'leucorrhinia_dubia', 'somatochlora_arctica', 'somatochlora_alpestris') ~ 'tyrphobionte',
+                             espece %in% c('aeshna_juncea', 'sympetrum_danae') ~ 'tyrphophile',
+                             espece %in% c('cordulia_aenea', 'libellula_quadrimaculata', 'aeshna_cyanea', 'anax_imperator', 'chalcolestes_viridis', 'sympecma_fusca') ~ 'generaliste'),
+         groupe=as.factor(groupe),
+         periode=case_when(month(date)==6  ~ 6,
+                           month(date)==7  ~ 7,
+                           month(date)==8  ~ 8,
+                           month(date)==9  ~ 9),
+         habitat_groupe=case_when(habitat_predominant%in%c('eau_libre', 'fosse_d_extraction')  ~ 'eau_libre_fosse',
+                                  habitat_predominant%in%c('mare_a_scheuchzerie','mare_a_sphaigne_verte','mare_a_sphaignes','mare_d_eau_libre')  ~ 'mare',
+                                  habitat_predominant%in%c('groupement_a_sphaignes_rouges','sphaignes_rouges')  ~ 'sphaignes',
+                                  habitat_predominant%in%c('tourbiere_tremblante','tremblant')  ~ 'tourbiere_tremblants',
+                                  habitat_predominant%in%c('zone_a_sphaignes','tourbiere_haute')  ~ 'zone_sphaignes_tourbiere_haute',
+                                  habitat_predominant%in%'tourbiere_erodee'  ~ 'tourbiere_erodee',
+                                  habitat_predominant%in%'vegetation_non_tourbeuse'  ~ 'vegetation_non_tourbeuse',
+                                  habitat_predominant%in%'bas_marais'  ~ 'bas_marais',
+                                  habitat_predominant%in%'fosse_d_extraction'  ~ 'fosse_d_extraction',
+                                  habitat_predominant%in%'groupement_a_carex_rostrata'  ~ 'groupement_a_carex_rostrata'),
+         habitat_groupe=as.factor(habitat_groupe),
+         habitat_groupe_2022=case_when(habitat_predominant%in%c('eau_libre', 'mare_d_eau_libre', 'fosse_d_extraction')  ~ 'eau_libre_gr',
+                                  habitat_predominant%in%c('mare_a_scheuchzerie','mare_a_sphaigne_rouges','mare_a_sphaignes')  ~ 'mare_vegetalisee_gr', 
+                                  habitat_predominant%in%c('groupement_a_sphaignes_rouges','tourbiere_tremblante','tremblant')  ~ 'tourbiere_tremblante_gr',
+                                  habitat_predominant%in%'tourbiere_erodee'  ~ 'tourbiere_erodee',
+                                  habitat_predominant%in%'groupement_a_carex_rostrata'  ~ 'groupement_a_carex_rostrata'),
+         habitat_groupe_2022=as.factor(habitat_groupe_2022),
+         helophytes_1=as.factor(helophytes_1),
+         profondeur_eau_cm=str_replace(profondeur_eau_cm, ">", "plusde"),
+         profondeur_lin=case_when(profondeur_eau_cm == 0 ~ 0,
+                                  profondeur_eau_cm == 2 ~ 2,
+                                  profondeur_eau_cm == 3 ~ 3,
+                                  profondeur_eau_cm == 4 ~ 4,
+                                  profondeur_eau_cm == 5 ~ 5,
+                                  profondeur_eau_cm == 10 ~ 10,
+                                  profondeur_eau_cm == 15 ~ 10,
+                                  profondeur_eau_cm == 20 ~ 20,
+                                  profondeur_eau_cm == 30 ~ 30,
+                                  profondeur_eau_cm == 35 ~ 35,
+                                  profondeur_eau_cm == 40 ~ 40,
+                                  profondeur_eau_cm == 50 ~ 50,
+                                  profondeur_eau_cm == 60 ~ 60,
+                                  profondeur_eau_cm == 70 ~ 70,
+                                  profondeur_eau_cm == 80 ~ 80,
+                                  profondeur_eau_cm == 90 ~ 90,
+                                  profondeur_eau_cm == 100 ~ 100),
+         profondeur_cat=case_when(profondeur_eau_cm %in%'plusde1'  ~ '>1',
+                                  profondeur_lin == 0 ~ '0',
+                                  profondeur_lin > 1 ~ '<1')) %>%
+  filter(!espece%in%'zygoptere') -> data_total
+```
+
+
+On importe également les fichiers de données SIG des placettes réalisées lors de l'étude-pilote de 2021. On projette ces placettes sur les cartographies d'habitats. Les valeurs manquantes (NA) correspondent aux habitats qui sont exclus du nouveau plan d'échantillonnage.
+
+TGF  
+
+```{r results=FALSE, fig.width=9, fig.height=9}
+
+#placettes_realisees_TGF <- sf::st_read(dsn = "../data", layer = "RNNTGF_Odonates2021_Placettes finales")
+placettes_realisees_TGF <- sf::st_read(dsn = "../data", layer = "TGF_Placettes_juin_2022")
+
+
+habitat_TGF %>%
+  ggplot() +
+  theme_bw() +
+  geom_sf(aes(fill=habitat_groupe_2022)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TGF, placettes 2021") +
+  #north(habitat_TGF, symbol=3, scale =0.05, location ="topleft" ) +
+  #scalebar(habitat_TGF, location = "bottomright", dist = 200, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  geom_sf(data = placettes_realisees_TGF, color="orange")
+
+```
+
+
+TDC
+
+```{r results=FALSE, fig.width=9, fig.height=7}
+
+# placettes_realisees_TDC <- sf::st_read(dsn = "../data", layer = "RNNTDC_Odonates2021_Placettes finales")
+placettes_realisees_TDC <- sf::st_read(dsn = "../data", layer = "TDC_placettes_juin_2022")
+
+
+habitat_TDC %>%
+  ggplot() +
+  geom_sf(aes(fill=habitat_groupe_2022)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNR TDC, placettes 2021") +
+  #north(habitat_TDC, symbol=3, scale =0.05, location ="topleft" ) +
+  #scalebar(habitat_TDC, location = "bottomright", dist = 50, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  geom_sf(data = placettes_realisees_TDC, color="orange") +
+  theme_bw()
+
+```
+
+TDM
+
+```{r results=FALSE, fig.width=9, fig.height=7}
+
+placettes_realisees_TDM <- sf::st_read(dsn = "../data", layer = "placettes_odonates_CEFE")
+
+
+habitat_TDM %>%
+  ggplot() +
+  geom_sf(aes(fill=habitat_groupe_2022)) +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables RNN TDM, placettes 2021") +
+  #north(habitat_TGF, symbol=3, scale =0.05, location ="topleft" ) +
+  #scalebar(habitat_TDM, location = "bottomright", dist = 50, dist_unit = "m", height = 0.02, st.size = 3, transform = FALSE) +
+  geom_sf(data = placettes_realisees_TDM, color="orange") +
+  theme_bw()
+
+```
+
+
+```{r}
+
+data_total %>%
+  filter(!secteur %in% 'peripherique') %>%
+  group_by(habitat_groupe_2022, site) %>%
+  summarise(tot_exuvies=sum(nombre_exuvies_anisopteres, na.rm=TRUE),
+            tot_placettes=length(unique(placette))) %>%
+  filter(!is.na(site)) %>%
+  pivot_wider(id_cols=habitat_groupe_2022,  names_from=site, values_from=c(tot_exuvies, tot_placettes), values_fill=0) -> bilan_habitats_2022
+
+```
+
+Le tableau suivant fournit le bilan du nombre d'exuvies collectées et de placettes échantillonnées en 2021 par catégorie d'habitat (nouveau regroupement de mai 2022). A noter que les placettes situées dans les zones périphériques de TDM ont préalablement été exclues (non échantillonnées en 2022).
+
+
+```{r }
+bilan_habitats_2022 %>%
+  knitr::kable()
+```
+
+On joint les infos relatives aux habitats regroupés dans le fichier de données collectées lors de l'étude-pilote au fichier de données SIG correspondant aux localités des placettes.
+
+```{r echo=FALSE, fig.width=9, fig.height=7}
+
+# TDM
+data_total %>%
+  filter(site%in%'RNM', secteur%in%'central') %>%
+  select(placette, habitat_groupe_2022) %>%
+  distinct() -> placette_habitat_RNM
+    
+placettes_realisees_TDM %>%
+  full_join(placette_habitat_RNM, by='placette') %>%
+  filter(!is.na(habitat_groupe_2022)) -> join_TDM
+
+
+# TGF
+data_total %>%
+  filter(site%in%'TGF') %>%
+  select(placette, habitat_groupe_2022) %>%
+  distinct() -> placette_habitat_TGF
+    
+placettes_realisees_TGF %>%
+  mutate(placette=as.factor(Name)) %>%
+  full_join(placette_habitat_TGF, by='placette') %>%
+  filter(!is.na(habitat_groupe_2022)) -> join_TGF
+
+# TDC
+data_total %>%
+  filter(site%in%'TDC') %>%
+  select(placette, habitat_groupe_2022) %>%
+  distinct() -> placette_habitat_TDC
+
+placettes_realisees_TDC %>%
+  mutate(placette=as.factor(N.)) %>%
+  full_join(placette_habitat_TDC, by='placette') %>%
+  filter(!is.na(habitat_groupe_2022)) -> join_TDC
+
+
+```
+
+On tire des placettes de manière systématique au sein des différents types d'habitats étudiés.
+```{r echo=FALSE, fig.width=9, fig.height=7}
+
+# TDM 
+habitat_TDM %>%
+ filter(habitat_groupe_2022 %in% "eau_libre_gr" & localite %in% 'central' & area <1000) %>%
+ st_sample(size = 15, type="regular") %>%
+  st_sf()  -> points_eau_libre_petits_TDM_central
+# st_write(obj = points_eau_libre_petits_TDM_central, dsn = "../outputs", layer= "points_eau_libre_petits_TDM_central_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+habitat_TDM %>%
+ filter(habitat_groupe_2022 %in% "eau_libre_gr" & localite %in% 'central' & area >1000) %>%
+ st_sample(size = 15, type="regular") %>%
+  st_sf()  -> points_eau_libre_lacs_TDM_central
+#st_write(obj = points_eau_libre_lacs_TDM_central, dsn = "../outputs", layer= "points_eau_libre_lacs_TDM_central_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+habitat_TDM %>%
+ filter(habitat_groupe_2022 %in% "tourbiere_erodee" & localite %in% 'central') %>%
+ st_sample(size = 10, type="regular") %>%
+  st_sf()  -> points_tourbiere_erodee_TDM_central
+#st_write(obj = points_tourbiere_erodee_TDM_central, dsn = "../outputs", layer= "points_tourbiere_erodee_TDM_central.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+habitat_TDM %>%
+ filter(habitat_groupe_2022 %in% "tourbiere_tremblante_gr" & localite %in% 'central') %>%
+ st_sample(size = 20, type="regular") %>%
+  st_sf()  -> points_tourbiere_tremblante_gr_TDM_central
+#st_write(obj = points_tourbiere_tremblante_gr_TDM_central, dsn = "../outputs", layer= "points_tourbiere_tremblante_gr_TDM_central.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+rbind(points_eau_libre_petits_TDM_central, points_eau_libre_lacs_TDM_central, points_tourbiere_erodee_TDM_central,  points_tourbiere_tremblante_gr_TDM_central) -> points_echant_TDM_central
+
+# TDC 
+habitat_TDC %>%
+ filter(habitat_groupe_2022 %in% "eau_libre_gr") %>%
+ st_sample(size = 19, type="regular") %>%
+  st_sf()  -> points_eau_libre_TDC
+#st_write(obj = points_eau_libre_TDC, dsn = "../outputs", layer= "points_eau_libre_TDC_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+habitat_TDC %>%
+ filter(habitat_groupe_2022 %in% "mare_vegetalisee_gr") %>%
+ st_sample(size = 14, type="regular") %>%
+  st_sf()  -> points_mare_vegetalisee_TDC
+#st_write(obj = points_mare_vegetalisee_TDC, dsn = "../outputs", layer= "points_mare_vegetalisee_TDC_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+habitat_TDC %>%
+ filter(habitat_groupe_2022 %in% "tourbiere_tremblante_gr") %>%
+ st_sample(size = 1, type="regular") %>%
+  st_sf()  -> points_tourbiere_tremblante_TDC
+#st_write(obj = points_tourbiere_tremblante_TDC, dsn = "../outputs", layer= "points_tourbiere_tremblante_TDC_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+habitat_TDC %>%
+ filter(habitat_groupe_2022 %in% "groupement_a_carex_rostrata") %>%
+ st_sample(size = 15, type="regular") %>%
+  st_sf()  -> points_Groupements_Carex_rostrata_TDC
+#st_write(obj = points_Groupements_Carex_rostrata_TDC, dsn = "../outputs", layer= "points_Groupements_Carex_rostrata_TDC_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+
+rbind(points_eau_libre_TDC, points_mare_vegetalisee_TDC,  points_tourbiere_tremblante_TDC, points_Groupements_Carex_rostrata_TDC) -> points_echant_TDC
+
+
+# TGF 
+habitat_TGF %>%
+ filter(habitat_groupe_2022 %in% "eau_libre_gr") %>%
+ st_sample(size = 3, type="regular") %>%
+  st_sf()  -> points_eau_libre_TGF
+#st_write(obj = points_eau_libre_TGF, dsn = "../outputs", layer= "points_eau_libre_TGF_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+habitat_TGF %>%
+ filter(habitat_groupe_2022 %in% "mare_vegetalisee_gr") %>%
+ st_sample(size = 26, type="regular") %>%
+  st_sf()  -> points_mare_vegetalisee_TGF
+#st_write(obj = points_mare_vegetalisee_TGF, dsn = "../outputs", layer= "points_mare_vegetalisee_TGF_2022.shp", driver = "ESRI Shapefile", delete_layer = FALSE)
+
+rbind(points_eau_libre_TGF, points_mare_vegetalisee_TGF) -> points_echant_TGF
+
+
+```
+
+On les projette sur cartes
+
+TDM
+```{r echo=FALSE, fig.width=9, fig.height=7}
+habitat_TDM %>%
+  filter(!is.na(habitat_groupe_2022), localite %in% 'central') %>%
+  ggplot() +
+  geom_sf(aes(fill=habitat_groupe_2022)) +
+  theme_bw() +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  #ggtitle("habitats favorables RNN TDM ") +
+  ggspatial::annotation_scale(location = "br", width_hint = 0.5, text_cex = 1) + 
+  ggspatial::annotation_north_arrow(location = "tl", pad_x = unit(0.2, "in"), pad_y = unit(0.2, "in"), width = unit(1, "cm")) +
+  #geom_sf(data = points_echant_TDM_central, color="blue") +
+  geom_sf(data = join_TDM, color="black")
+
+```  
+
+
+TDC
+```{r echo=FALSE, fig.width=9, fig.height=7}
+habitat_TDC %>%
+  filter(!is.na(habitat_groupe_2022)) %>%
+  ggplot() +
+  geom_sf(aes(fill=habitat_groupe_2022)) +
+  theme_bw() +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  #ggtitle("habitats favorables TDC ") +
+  ggspatial::annotation_scale(location = "br", width_hint = 0.5, text_cex = 1) + 
+  ggspatial::annotation_north_arrow(location = "tl", pad_x = unit(0.2, "in"), pad_y = unit(0.2, "in"), width = unit(1, "cm")) +
+  #geom_sf(data = points_echant_TDC, color="blue") +
+  geom_sf(data = join_TDC, color="black")
+
+```
+
+TGF
+```{r echo=FALSE, fig.width=9, fig.height=7}
+habitat_TGF %>%
+  filter(!is.na(habitat_groupe_2022)) %>%
+  ggplot() +
+  geom_sf(aes(fill=habitat_groupe_2022)) +
+  theme_bw() +
+  xlab("Longitude") + 
+  ylab("Latitude") +
+  ggtitle("habitats favorables TGF ") +
+  ggspatial::annotation_scale(location = "br", width_hint = 0.3, text_cex = 1) + 
+  ggspatial::annotation_north_arrow(location = "tl", pad_x = unit(0.2, "in"), pad_y = unit(0.2, "in"), width = unit(1, "cm")) +
+  #geom_sf(data = points_echant_TGF, color="blue") +
+  geom_sf(data = join_TGF, color="orange")
+
+```
+
+
